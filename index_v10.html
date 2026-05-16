@@ -1,0 +1,2334 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NamYuen Thal Screen v9</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f0f3f7; --white:#fff;
+  --primary:#0a2e4a; --primary2:#1a5276; --accent:#2e86c1;
+  --mom:#7d3c98; --mom-l:#f5eef8; --mom-b:#c39bd3;
+  --dad:#1a5276; --dad-l:#d6eaf8; --dad-b:#85c1e9;
+  --green:#1e8449; --green-l:#eafaf1;
+  --yellow:#9a7d0a; --yellow-l:#fef9e7;
+  --red:#c0392b; --red-l:#fdedec;
+  --border:#dde3eb; --text:#1a1a2e; --text2:#4a5568; --text3:#94a3b8;
+  --r:14px; --sh:0 2px 12px rgba(0,0,0,0.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);padding-bottom:120px;font-size:16px}
+
+/* TOPBAR */
+.topbar{background:linear-gradient(150deg,#071e30 0%,#0a2e4a 45%,#1a5276 100%);padding:12px 16px 10px;position:sticky;top:0;z-index:200;box-shadow:0 3px 18px rgba(7,30,48,0.45)}
+.tb{max-width:480px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.tb-left{flex:1;min-width:0}
+.tb-name{font-size:16px;font-weight:800;color:#fff;letter-spacing:-0.3px;display:flex;align-items:center;gap:7px;line-height:1.2}
+.tb-dot{width:7px;height:7px;background:#5dade2;border-radius:50%;box-shadow:0 0 7px #5dade2;flex-shrink:0}
+.tb-dev{font-size:11px;color:rgba(255,255,255,0.72);font-weight:500;margin-top:2px}
+.tb-hosp{font-size:10px;color:rgba(255,255,255,0.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-btns{display:flex;gap:7px;flex-shrink:0}
+.tb-btn{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:#fff;transition:background 0.2s}
+.tb-btn:active{background:rgba(255,255,255,0.22)}
+
+/* SETTINGS MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:none;align-items:flex-end;justify-content:center}
+.overlay.show{display:flex}
+.sheet{background:var(--white);border-radius:20px 20px 0 0;padding:18px 18px 40px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;animation:sup 0.25s ease}
+@keyframes sup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
+.sheet-title{font-size:17px;font-weight:800;margin-bottom:14px}
+.set-row{margin-bottom:12px}
+.set-row label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:5px}
+.set-row input{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:11px 12px;font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--text);outline:none}
+.set-row input:focus{border-color:var(--accent)}
+.btn-save{width:100%;background:var(--primary2);color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Sarabun',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:6px}
+
+/* CONTENT */
+.content{max-width:480px;margin:0 auto;padding:14px 13px 0}
+
+/* PERSON CARD */
+.pcard{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);border:1.5px solid var(--border);overflow:hidden;margin-bottom:13px}
+.phead{padding:12px 15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.phead-emoji{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.mom .phead-emoji{background:var(--mom-l)}
+.dad .phead-emoji{background:var(--dad-l)}
+.phead-text h3{font-size:15px;font-weight:700}
+.mom h3{color:var(--mom)}
+.dad h3{color:var(--dad)}
+.phead-text p{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* MODE TOGGLE */
+.mtog{margin-left:auto;display:flex;background:var(--bg);border-radius:8px;padding:3px;gap:2px;border:1px solid var(--border)}
+.mt-btn{padding:5px 9px;border-radius:6px;border:none;background:transparent;font-family:'Sarabun',sans-serif;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.mt-btn.on{background:var(--white);box-shadow:0 1px 4px rgba(0,0,0,0.1);color:var(--text)}
+
+/* INPUT NUM */
+.iarea{padding:13px 14px 0}
+.sublbl{font-size:10px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--text3);margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.sublbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.ig3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px}
+.fld label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.fld label .u{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);font-weight:400}
+.fw{position:relative}
+.fw input{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:10px 22px 10px 10px;font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:500;color:var(--text);outline:none;-moz-appearance:textfield;transition:border-color 0.2s,background 0.2s}
+.fw input::-webkit-outer-spin-button,.fw input::-webkit-inner-spin-button{-webkit-appearance:none}
+.fw input:focus{background:#fff}
+.mom .fw input:focus{border-color:var(--mom);box-shadow:0 0 0 3px rgba(125,60,152,0.1)}
+.dad .fw input:focus{border-color:var(--dad);box-shadow:0 0 0 3px rgba(26,82,118,0.1)}
+.mom .fw input.ok{border-color:var(--mom-b);background:#fff}
+.dad .fw input.ok{border-color:var(--dad-b);background:#fff}
+.fw .un{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--text3);pointer-events:none;font-family:'IBM Plex Mono',monospace}
+
+/* DROPDOWN MODE */
+.ddmode{padding:13px 14px 14px;display:none}
+.ddmode.show{display:block}
+.dd-lbl{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:7px}
+.dd-sel{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 36px 12px 13px;font-family:'Sarabun',sans-serif;font-size:16px;color:var(--text);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center}
+.mom .dd-sel:focus{border-color:var(--mom)}
+.dad .dd-sel:focus{border-color:var(--dad)}
+
+/* AUTO RESULT */
+.ares{overflow:hidden;max-height:0;opacity:0;transition:max-height 0.45s ease,opacity 0.35s}
+.ares.show{max-height:900px;opacity:1}
+.ares-inner{padding:12px 14px 14px}
+.rcard{border-radius:12px;padding:14px;border:1.5px solid}
+.rc-mom{background:var(--mom-l);border-color:var(--mom-b)}
+.rc-dad{background:var(--dad-l);border-color:var(--dad-b)}
+.rc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.rc-diag{font-size:17px;font-weight:800;line-height:1.2}
+.rc-mom .rc-diag{color:var(--mom)}
+.rc-dad .rc-diag{color:var(--dad)}
+.rc-geno{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:3px 9px;border-radius:6px;flex-shrink:0;white-space:nowrap}
+.rc-mom .rc-geno{background:rgba(125,60,152,0.12);color:var(--mom)}
+.rc-dad .rc-geno{background:rgba(26,82,118,0.12);color:var(--dad)}
+.rc-desc{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:10px}
+
+/* reason rows */
+.why-rows{margin-bottom:8px;display:flex;flex-direction:column;gap:4px}
+.wr{display:flex;align-items:flex-start;gap:7px;font-size:12.5px;color:var(--text2);line-height:1.5}
+.wdot{width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px}
+.d-ok{background:#d5f5e3;color:var(--green)}
+.d-hi{background:#fadbd8;color:var(--red)}
+.d-lo{background:#d6eaf8;color:var(--dad)}
+.d-warn{background:#fef9e7;color:var(--yellow)}
+
+/* toggle detail */
+.btn-why{background:none;border:none;cursor:pointer;font-family:'Sarabun',sans-serif;font-size:12px;font-weight:700;display:flex;align-items:center;gap:4px;padding:0}
+.rc-mom .btn-why{color:var(--mom)}
+.rc-dad .btn-why{color:var(--dad)}
+.why-arr{transition:transform 0.2s;font-size:10px}
+.btn-why.open .why-arr{transform:rotate(90deg)}
+.why-detail{max-height:0;overflow:hidden;transition:max-height 0.3s ease}
+.why-detail.open{max-height:400px}
+.why-list{list-style:none;margin-top:9px;display:flex;flex-direction:column;gap:5px}
+
+/* PCR notice */
+.pcr-box{margin-top:10px;background:#fff8f0;border:1.5px dashed #e59866;border-radius:10px;padding:10px 12px;display:flex;gap:8px;align-items:flex-start}
+.pcr-box h4{font-size:12.5px;font-weight:700;color:#935116;margin-bottom:2px}
+.pcr-box p{font-size:12px;color:#7d6608;line-height:1.5}
+
+/* COUPLE SECTION */
+.couple-sec{overflow:hidden;max-height:0;opacity:0;transition:max-height 0.5s ease,opacity 0.4s}
+.couple-sec.show{max-height:1600px;opacity:1}
+.sec-lbl{display:flex;align-items:center;gap:8px;padding:4px 0 10px}
+.sec-lbl-dot{width:7px;height:7px;border-radius:50%;background:var(--primary2);flex-shrink:0}
+.sec-lbl-txt{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)}
+
+/* pair banner */
+.pbanner{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);border:1.5px solid var(--border);padding:14px 15px;margin-bottom:10px}
+.pchips{display:flex;align-items:center;justify-content:center;gap:10px}
+.pchip{border-radius:10px;padding:8px 16px;text-align:center}
+.pchip small{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;opacity:0.65;margin-bottom:2px}
+.pchip span{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700}
+.pc-m{background:var(--mom-l);color:var(--mom)}
+.pc-d{background:var(--dad-l);color:var(--dad)}
+.px{font-size:22px;color:var(--text3)}
+
+/* alert */
+.abox{border-radius:var(--r);padding:14px 15px;display:flex;gap:12px;align-items:flex-start;border:2px solid;margin-bottom:10px}
+.ab-r{background:#fdf3f2;border-color:#e74c3c}
+.ab-y{background:#fefdf2;border-color:#f0c040}
+.ab-g{background:#f2fdf5;border-color:#2ecc71}
+.abox-icon{font-size:26px;flex-shrink:0;line-height:1}
+.abox-body h3{font-size:16px;font-weight:800;margin-bottom:3px}
+.ab-r h3{color:var(--red)}
+.ab-y h3{color:var(--yellow)}
+.ab-g h3{color:var(--green)}
+.abox-body p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* card wrap */
+.cwrap{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);border:1.5px solid var(--border);overflow:hidden;margin-bottom:10px}
+.cwhead{padding:9px 14px;background:var(--bg);border-bottom:1px solid var(--border);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2)}
+.cwbody{padding:12px 13px}
+
+/* risk grid */
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rcell{border-radius:10px;padding:12px 9px;text-align:center}
+.cr{background:#fdf2f2} .cy{background:#fefdf0} .cg{background:#f0fdf4} .cb{background:#f0f6fd}
+.rpct{font-family:'IBM Plex Mono',monospace;font-size:23px;font-weight:700;margin-bottom:3px}
+.cr .rpct{color:var(--red)} .cy .rpct{color:var(--yellow)} .cg .rpct{color:var(--green)} .cb .rpct{color:var(--dad)}
+.rgeno{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;margin-bottom:3px}
+.cr .rgeno{color:#922b21} .cy .rgeno{color:#7d6608} .cg .rgeno{color:#1d6a3a} .cb .rgeno{color:#1a4f72}
+.rname{font-size:11px;color:var(--text2);line-height:1.3}
+
+/* actions */
+.astack{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.abtn{border-radius:var(--r);padding:14px 15px;display:flex;align-items:center;gap:12px;border:none;cursor:pointer;font-family:'Sarabun',sans-serif;width:100%;text-align:left;transition:transform 0.15s;box-shadow:var(--sh)}
+.abtn:active{transform:scale(0.98)}
+.a-pcr{background:#0d3b5e;color:#fff}
+.a-ref{background:#6c3483;color:#fff}
+.a-ok{background:var(--green-l);color:var(--green);border:1.5px solid #a9dfbf}
+.a-ic{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.a-ok .a-ic{background:#a9dfbf}
+.a-txt h4{font-size:14px;font-weight:700}
+.a-txt p{font-size:12px;opacity:0.75;margin-top:1px}
+.a-ok .a-txt p{color:var(--green);opacity:0.8}
+.a-arr{margin-left:auto;font-size:20px;opacity:0.35}
+
+/* scenario */
+.scitem{border-radius:10px;padding:12px 13px;margin-bottom:8px;border-left:3px solid}
+.sc-p{background:var(--red-l);border-color:var(--red)}
+.sc-n{background:var(--green-l);border-color:var(--green)}
+.scitem:last-child{margin-bottom:0}
+.scitem h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.sc-p h4{color:var(--red)} .sc-n h4{color:var(--green)}
+.scitem p{font-size:12.5px;color:var(--text2);line-height:1.5}
+
+/* learn */
+.lbox{background:var(--yellow-l);border:1.5px solid #f0c040;border-radius:var(--r);padding:13px 14px;margin-bottom:10px}
+.lbox-h{font-size:10.5px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.lbox p{font-size:13px;color:#5d4e00;line-height:1.7}
+
+/* reset */
+.btn-reset{width:100%;background:transparent;border:1.5px solid var(--border);border-radius:var(--r);padding:14px;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:600;color:var(--text2);cursor:pointer;margin-bottom:40px}
+.footnote{text-align:center;font-size:11px;color:var(--text3);line-height:1.7;padding:0 20px 10px}
+
+/* ── SAVE BUTTON ── */
+.btn-save-case{width:100%;background:linear-gradient(135deg,#1e8449 0%,#27ae60 100%);color:#fff;border:none;border-radius:var(--r);padding:16px;font-family:'Sarabun',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 3px 12px rgba(30,132,73,0.3);transition:opacity 0.2s,transform 0.15s}
+.btn-save-case:active{transform:scale(0.98);opacity:0.9}
+.btn-save-case:disabled{background:#aaa;box-shadow:none;cursor:default}
+
+/* ── SAVE STATUS TOAST ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a2e;color:#fff;padding:10px 20px;border-radius:30px;font-size:14px;font-weight:600;opacity:0;transition:all 0.3s;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:#1e8449}
+.toast.err{background:#c0392b}
+
+/* ── FOOTER ADMIN LINK — hidden (use topbar 🛡️ button) ── */
+.footnote .admin-link{display:none}
+
+/* ═══════════════════════════
+   ADMIN OVERLAY — Light Theme
+════════════════════════════ */
+#adminOverlay{position:fixed;inset:0;background:#eef2f7;z-index:900;display:none;flex-direction:column;overflow:hidden}
+#adminOverlay.show{display:flex}
+.adm-bar{background:linear-gradient(150deg,#071e30,#1a5276);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.adm-bar h2{color:#fff;font-size:17px;font-weight:800;flex:1}
+.adm-bar-close{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;width:34px;height:34px;border-radius:9px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* login panel */
+.adm-login{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+.adm-login-box{background:#fff;border:1.5px solid #dde3eb;border-radius:20px;padding:28px 24px;width:100%;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.08)}
+.adm-login-box h3{color:#0a2e4a;font-size:18px;font-weight:700;margin-bottom:6px;text-align:center}
+.adm-login-box p{color:#4a5568;font-size:13px;text-align:center;margin-bottom:20px}
+.adm-pin-input{width:100%;background:#f0f3f7;border:1.5px solid #dde3eb;border-radius:12px;padding:14px;font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;color:#1a1a2e;text-align:center;letter-spacing:8px;outline:none;margin-bottom:12px}
+.adm-pin-input:focus{border-color:#2e86c1;box-shadow:0 0 0 3px rgba(46,134,193,0.12)}
+.adm-btn-login{width:100%;background:#2e86c1;color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Sarabun',sans-serif;font-size:16px;font-weight:700;cursor:pointer}
+.adm-err{color:#c0392b;font-size:13px;text-align:center;margin-top:8px;display:none}
+
+/* admin content */
+.adm-content{flex:1;overflow-y:auto;padding:14px}
+
+/* stats grid */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:#fff;border:1.5px solid #dde3eb;border-radius:14px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.stat-num{font-size:32px;font-weight:800;color:#1a5276;font-family:'IBM Plex Mono',monospace;line-height:1}
+.stat-lbl{font-size:12px;color:#4a5568;margin-top:5px;font-weight:500}
+
+/* section header */
+.adm-sec{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.adm-sec::after{content:'';flex:1;height:1px;background:#dde3eb}
+
+/* pattern chart */
+.pat-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.pat-row{background:#fff;border:1px solid #dde3eb;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.pat-bar-wrap{flex:1;height:6px;background:#e8edf3;border-radius:3px;overflow:hidden}
+.pat-bar{height:100%;border-radius:3px;background:#2e86c1;transition:width 0.5s ease}
+.pat-name{font-size:12px;font-family:'IBM Plex Mono',monospace;color:#1a2a3a;min-width:80px}
+.pat-cnt{font-size:12px;font-weight:700;color:#1a5276;min-width:30px;text-align:right}
+
+/* ── result badge labels (admin case list) ── */
+.res-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:2px}
+.rb-normal{background:#eafaf1;color:#1e6a3e;border:1px solid #a9dfbf}
+.rb-pcr-alpha{background:#fff3cd;color:#7d5a00;border:1px solid #ffd060}
+.rb-pcr-beta{background:#fdebd0;color:#784212;border:1px solid #f0a060}
+.rb-risk{background:#fdedec;color:#c0392b;border:1px solid #f1948a}
+.rb-watch{background:#eaf4fb;color:#1a5276;border:1px solid #85c1e9}
+
+/* case list */
+.case-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.case-card{background:#fff;border:1.5px solid #dde3eb;border-radius:12px;padding:12px;box-shadow:0 1px 5px rgba(0,0,0,0.05)}
+.case-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.case-date{font-size:11px;color:#94a3b8;font-family:'IBM Plex Mono',monospace}
+.case-pcr{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px}
+.pcr-yes{background:#fdedec;color:#c0392b;border:1px solid #f1948a}
+.pcr-no{background:#eafaf1;color:#1e8449;border:1px solid #a9dfbf}
+.case-pair{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.case-chip{font-size:11px;font-family:'IBM Plex Mono',monospace;padding:3px 8px;border-radius:6px;font-weight:600}
+.cc-m{background:#f5eef8;color:#7d3c98}
+.cc-d{background:#d6eaf8;color:#1a5276}
+.case-result{font-size:12px;color:#4a5568;margin-bottom:8px;line-height:1.4}
+.case-result strong{color:#1a1a2e}
+
+/* verification */
+.verif-row{display:flex;gap:6px;align-items:stretch}
+.verif-name{flex:1;background:#f0f3f7;border:1px solid #dde3eb;border-radius:8px;padding:8px 10px;font-family:'Sarabun',sans-serif;font-size:14px;color:#1a1a2e;outline:none}
+.verif-name::placeholder{color:#94a3b8}
+.verif-role{background:#f0f3f7;border:1px solid #dde3eb;border-radius:8px;padding:8px 10px;font-family:'Sarabun',sans-serif;font-size:14px;color:#1a1a2e;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:26px}
+.verif-role option{background:#fff;color:#1a1a2e}
+.verif-btns{display:flex;gap:5px;margin-top:6px}
+.vbtn{flex:1;border:none;border-radius:8px;padding:9px 6px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.2s}
+.vbtn-ok{background:#eafaf1;color:#1e8449;border:1.5px solid #a9dfbf}
+.vbtn-err{background:#fdedec;color:#c0392b;border:1.5px solid #f1948a}
+.vbtn:active{opacity:0.75}
+.verif-done{font-size:12px;padding:6px 0;border-radius:8px;text-align:center;font-weight:700;margin-top:4px}
+.vd-ok{color:#1e8449;background:#eafaf1;padding:4px 10px;border-radius:6px}
+.vd-err{color:#c0392b;background:#fdedec;padding:4px 10px;border-radius:6px}
+
+/* export */
+.adm-export-btn{width:100%;background:#eaf4fb;border:1.5px solid #85c1e9;color:#1a5276;border-radius:12px;padding:14px;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px}
+.adm-export-btn:active{opacity:0.8}
+
+/* gs url input */
+.gs-row{margin-bottom:10px}
+.gs-row label{display:block;font-size:12px;font-weight:600;color:#4a5568;margin-bottom:5px}
+.gs-row input{width:100%;background:#f0f3f7;border:1.5px solid #dde3eb;border-radius:10px;padding:11px 12px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#1a1a2e;outline:none}
+.gs-row input:focus{border-color:#2e86c1}
+.gs-row input::placeholder{color:#94a3b8}
+.btn-gs-save{background:#eaf4fb;border:1.5px solid #85c1e9;color:#1a5276;border-radius:9px;padding:9px 16px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+
+/* ── COMPACT CASE CARD (v7) ── */
+.cc-line{font-size:13px;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#1a2a3a;padding:5px 0;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-line .lbl{font-size:12px;font-weight:700;font-family:'Sarabun',sans-serif;margin-right:4px}
+.cc-line .sep{color:#94a3b8;margin:0 4px}
+.cc-mom-line .lbl{color:#7d3c98}
+.cc-dad-line .lbl{color:#1a5276}
+.cc-interp{font-size:12.5px;color:#374151;padding:5px 0;line-height:1.6}
+.cc-badge-row{padding:4px 0 6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cc-sep{height:1px;background:#e8edf3;margin:6px 0}
+.note-area{width:100%;background:#f0f3f7;border:1.5px solid #dde3eb;border-radius:9px;padding:9px 11px;font-family:'Sarabun',sans-serif;font-size:14px;color:#1a1a2e;outline:none;resize:vertical;min-height:60px;box-sizing:border-box}
+.note-area:focus{border-color:#2e86c1;background:#fff}
+.note-area::placeholder{color:#94a3b8}
+.note-saved{font-size:11px;color:#1e8449;margin-top:2px;display:none}
+.verif-sep{height:1px;background:#e8edf3;margin:8px 0}
+.cc-verif-block{padding-top:4px}
+.cc-verif-hd{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:6px}
+
+/* ── PCR result block in admin case card ── */
+.pcr-result-block{margin-top:8px;padding-top:8px;border-top:1px solid #e8edf3}
+.pcr-result-hd{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#784212;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+
+/* ── KNOWLEDGE OVERLAY ── */
+#knowledgeOverlay{position:fixed;inset:0;background:#f8fafc;z-index:900;display:none;flex-direction:column;overflow:hidden}
+#knowledgeOverlay.show{display:flex}
+.know-bar{background:linear-gradient(150deg,#071e30,#1a5276);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.know-bar-back{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:9px;padding:0 12px;height:34px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;white-space:nowrap}
+.know-bar h2{color:#fff;font-size:17px;font-weight:800;flex:1;text-align:center}
+.know-content{flex:1;overflow-y:auto;padding:14px;max-width:600px;margin:0 auto;width:100%}
+.know-section{margin-bottom:20px}
+.know-h1{font-size:18px;font-weight:800;color:#0a2e4a;margin:20px 0 10px;padding-bottom:6px;border-bottom:2px solid #2e86c1}
+.know-h2{font-size:15px;font-weight:700;color:#1a5276;margin:14px 0 8px}
+.know-p{font-size:14px;color:#374151;line-height:1.8;margin-bottom:8px}
+.know-table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:13px}
+.know-table th{background:#0a2e4a;color:#fff;padding:8px 10px;text-align:left;font-weight:700}
+.know-table td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;line-height:1.6}
+.know-table tr:nth-child(even) td{background:#f0f6fd}
+.know-table tr:hover td{background:#e8f4fb}
+.know-box{border-radius:12px;padding:12px 14px;margin-bottom:10px;border-left:4px solid}
+.know-box-yellow{background:#fef9e7;border-color:#f0c040}
+.know-box-blue{background:#eaf4fb;border-color:#2e86c1}
+.know-box-red{background:#fdedec;border-color:#e74c3c}
+.know-box-green{background:#eafaf1;border-color:#2ecc71}
+.know-chip{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:2px 8px;border-radius:5px;background:#e8edf3;color:#1a2a3a;margin:1px}
+.know-search{width:100%;background:#fff;border:1.5px solid #dde3eb;border-radius:10px;padding:11px 14px;font-family:'Sarabun',sans-serif;font-size:15px;color:#1a1a2e;outline:none;margin-bottom:14px}
+.know-search:focus{border-color:#2e86c1}
+.know-toc{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.know-toc-btn{background:#eaf4fb;border:1px solid #85c1e9;color:#1a5276;border-radius:8px;padding:6px 12px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+.know-toc-btn:active{background:#2e86c1;color:#fff}
+.know-highlight{background:#fff3cd;border-radius:3px;padding:0 2px}
+
+/* ── SCAN (Camera) BUTTON ── */
+.scan-btn{display:flex;align-items:center;gap:6px;margin:0 14px 12px;background:linear-gradient(135deg,#0d3b5e 0%,#1a5276 100%);color:#fff;border:none;border-radius:10px;padding:10px 14px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;cursor:pointer;width:calc(100% - 28px);box-shadow:0 2px 10px rgba(13,59,94,0.25);transition:opacity 0.2s}
+.scan-btn:active{opacity:0.85}
+.scan-btn .sc-ic{width:30px;height:30px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.scan-btn .sc-txt{text-align:left}
+.scan-btn .sc-txt span{display:block;font-size:11px;opacity:0.7;font-weight:500;margin-top:1px}
+.scan-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:800;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.scan-overlay.show{display:flex}
+.scan-box{background:#fff;border-radius:20px;padding:20px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
+.scan-box-title{font-size:17px;font-weight:800;color:#0a2e4a;margin-bottom:4px}
+.scan-box-sub{font-size:12px;color:#94a3b8;margin-bottom:14px}
+.scan-upload-area{border:2.5px dashed #85c1e9;border-radius:14px;padding:20px;text-align:center;cursor:pointer;background:#f7fbff;margin-bottom:12px;transition:background 0.2s}
+.scan-upload-area:hover{background:#eaf4fb}
+.scan-upload-area.has-img{border-style:solid;border-color:#2e86c1;background:#eaf4fb;padding:10px}
+.scan-upload-area img{max-width:100%;max-height:200px;border-radius:8px;object-fit:contain}
+.scan-upload-txt{font-size:14px;color:#4a5568;margin-top:8px}
+.scan-upload-txt small{display:block;font-size:11px;color:#94a3b8;margin-top:3px}
+.scan-result-box{background:#f0f8ff;border:1.5px solid #85c1e9;border-radius:12px;padding:12px 14px;margin-bottom:12px;display:none}
+.scan-result-box.show{display:block}
+.scan-result-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#1a5276;margin-bottom:8px}
+.scan-field-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px}
+.scan-field{background:#fff;border:1px solid #d0e4f2;border-radius:8px;padding:6px 8px}
+.scan-field-lbl{font-size:10px;font-weight:700;color:#4a5568;margin-bottom:2px}
+.scan-field-val{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#0a2e4a}
+.scan-field-val.empty{color:#94a3b8}
+.scan-status{font-size:13px;color:#1a5276;text-align:center;padding:10px 0;display:none}
+.scan-status.show{display:block}
+.scan-btn-row{display:flex;gap:8px}
+.scan-apply-btn{flex:1;background:linear-gradient(135deg,#1e8449,#27ae60);color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:700;cursor:pointer}
+.scan-cancel-btn{background:#f0f3f7;color:#4a5568;border:1.5px solid #dde3eb;border-radius:10px;padding:13px 18px;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:600;cursor:pointer}
+
+/* ── PCR DETAIL SECTION (with per-person) ── */
+.pcr-detail-sec{background:#fff;border-radius:14px;border:2px solid #e59866;padding:0;margin-bottom:10px;overflow:hidden}
+.pcr-detail-hd{background:linear-gradient(135deg,#7d4e00,#c67c26);color:#fff;padding:12px 15px;display:flex;align-items:center;gap:8px}
+.pcr-detail-hd-ic{font-size:20px}
+.pcr-detail-hd h4{font-size:15px;font-weight:800}
+.pcr-detail-hd p{font-size:11px;opacity:0.8;margin-top:1px}
+.pcr-person-row{padding:12px 14px;border-bottom:1px solid #fde8c8}
+.pcr-person-row:last-child{border-bottom:none}
+.pcr-person-lbl{font-size:12px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.pcr-mom-lbl{color:var(--mom)}
+.pcr-dad-lbl{color:var(--dad)}
+.pcr-type-row{display:flex;gap:6px;margin-bottom:8px}
+.pcr-type-chip{flex:1;border-radius:8px;padding:7px 6px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;border:2px solid transparent;transition:all 0.18s;font-family:'Sarabun',sans-serif}
+.pcr-type-chip.active-alpha{background:#d5e8f3;border-color:#2e86c1;color:#1a5276}
+.pcr-type-chip.active-beta{background:#f5e8d5;border-color:#c67c26;color:#7d4e00}
+.pcr-type-chip.inactive{background:#f0f3f7;border-color:var(--border);color:var(--text3)}
+.pcr-result-btns{display:flex;gap:6px}
+.pcr-rbtn{flex:1;border-radius:9px;padding:9px 6px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;border:2px solid transparent;font-family:'Sarabun',sans-serif;transition:all 0.18s}
+.pcr-rbtn.pos{background:#fdedec;border-color:#e74c3c;color:#c0392b}
+.pcr-rbtn.neg{background:#eafaf1;border-color:#2ecc71;color:#1e8449}
+.pcr-rbtn.pend{background:#f0f3f7;border-color:var(--border);color:#4a5568}
+.pcr-rbtn.selected{box-shadow:0 0 0 3px currentColor;font-weight:800}
+.pcr-rbtn.unselected{opacity:0.4}
+.pcr-combined-result{padding:12px 14px 20px;background:#fdfaf6;border-top:1.5px solid #fde8c8;display:none}
+.pcr-combined-result.show{display:block}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb">
+    <div class="tb-left">
+      <div class="tb-name"><div class="tb-dot"></div>NamYuen Thal Screen</div>
+      <div class="tb-dev">พัฒนาโดย Jariya H.</div>
+      <div class="tb-hosp">คลินิกฝากครรภ์ โรงพยาบาลน้ำยืน</div>
+    </div>
+    <div class="tb-btns">
+      <div class="tb-btn" onclick="openSettings()">⚙️</div>
+      <div class="tb-btn" onclick="openAdmin()" title="หน้าเจ้าหน้าที่">🛡️</div>
+      <div class="tb-btn" onclick="openKnowledge()" title="ความรู้ Hb Typing">📖</div>
+      <div class="tb-btn" onclick="resetAll()">🔄</div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="overlay" id="settingsModal" onclick="closeSettingsOutside(event)">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">⚙️ ตั้งค่าค่าปกติ (Cutoff)</div>
+    <div class="set-row" style="margin-bottom:16px;padding-bottom:14px;border-bottom:1.5px solid var(--border)">
+      <label style="display:flex;align-items:center;gap:5px">🔑 Anthropic API Key <span style="font-size:11px;color:var(--text3);font-weight:400">(สำหรับฟีเจอร์สแกนรูป)</span></label>
+      <div style="position:relative">
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." style="padding-right:44px" oninput="saveApiKey(this.value)">
+        <button onclick="toggleApiKeyVis()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text3)" id="apiKeyEye">👁</button>
+      </div>
+      <div id="apiKeyStatus" style="font-size:11px;margin-top:4px;color:var(--green)"></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5">Key เก็บใน localStorage บนเครื่องนี้เท่านั้น ไม่ส่งไปไหน</div>
+    </div>
+    <div class="set-row">
+      <label>HbA₂ สูงกว่านี้ = ผิดปกติ (ค่าเริ่มต้น 3.5%)</label>
+      <input type="number" id="cut_hba2" value="3.5" step="0.1" inputmode="decimal">
+    </div>
+    <div class="set-row">
+      <label>HbA₂ borderline เริ่มที่ (ค่าเริ่มต้น 3.2%)</label>
+      <input type="number" id="cut_hba2_b" value="3.2" step="0.1" inputmode="decimal">
+    </div>
+    <div class="set-row">
+      <label>MCV ต่ำกว่านี้ = ผิดปกติ (ค่าเริ่มต้น 80 fL)</label>
+      <input type="number" id="cut_mcv" value="80" step="1" inputmode="decimal">
+    </div>
+    <div class="set-row">
+      <label>MCH ต่ำกว่านี้ = ผิดปกติ (ค่าเริ่มต้น 27 pg)</label>
+      <input type="number" id="cut_mch" value="27" step="1" inputmode="decimal">
+    </div>
+    <button class="btn-save" onclick="saveSettings()">💾 บันทึก</button>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN OVERLAY ══════════════════ -->
+<div id="adminOverlay">
+  <!-- topbar -->
+  <div class="adm-bar">
+    <button class="adm-bar-close" onclick="closeAdmin()" style="width:auto;padding:0 12px;font-size:13px;font-weight:700;gap:6px;display:flex;align-items:center;white-space:nowrap">← กลับหน้ากรอกข้อมูล</button>
+    <h2 style="text-align:center;flex:1">🛡️ หน้าเจ้าหน้าที่</h2>
+  </div>
+
+  <!-- login panel (shown first) -->
+  <div class="adm-login" id="admLogin">
+    <div class="adm-login-box">
+      <h3>🔐 ยืนยันตัวตน</h3>
+      <p>ใส่รหัส 6 หลักสำหรับเจ้าหน้าที่</p>
+      <input class="adm-pin-input" type="password" inputmode="numeric" maxlength="6" id="admPinInput" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPin()">
+      <button class="adm-btn-login" onclick="checkPin()">เข้าสู่ระบบ</button>
+      <p class="adm-err" id="admErr">รหัสไม่ถูกต้อง กรุณาลองใหม่</p>
+    </div>
+  </div>
+
+  <!-- admin content (hidden until login) -->
+  <div class="adm-content" id="admContent" style="display:none">
+
+    <!-- stats -->
+    <div class="adm-sec">📊 สถิติภาพรวม</div>
+    <div id="visitCountDisplay" style="font-size:12px;color:#94a3b8;margin-bottom:10px;margin-top:-6px;padding-left:2px"></div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" id="st_total">0</div><div class="stat-lbl">เคสทั้งหมด</div></div>
+      <div class="stat-card"><div class="stat-num" id="st_risk">0</div><div class="stat-lbl" id="st_risk_lbl">คู่เสี่ยง (แดง)</div></div>
+      <div class="stat-card"><div class="stat-num" id="st_pcr">0</div><div class="stat-lbl" id="st_pcr_lbl">ส่ง PCR</div></div>
+      <div class="stat-card" onclick="scrollToFirstUnverified()" style="cursor:pointer;background:#fff8f0;border-color:#e59866">
+        <div class="stat-num" id="st_pending" style="color:#e67e22">0</div>
+        <div class="stat-lbl" style="color:#784212">⏳ รอยืนยัน</div>
+      </div>
+      <div class="stat-card" id="st_verif_card" style="grid-column:1/-1">
+        <div class="stat-num" id="st_verif">0</div>
+        <div class="stat-lbl">ยืนยันแล้ว</div>
+        <div id="st_verif_detail" style="font-size:12px;color:#4a5568;margin-top:6px;line-height:1.7"></div>
+      </div>
+    </div>
+
+    <!-- pattern freq -->
+    <div class="adm-sec">🧬 Pattern ที่พบบ่อย</div>
+    <div class="pat-list" id="patList"></div>
+
+    <!-- case list -->
+    <div class="adm-sec">📋 รายการเคส</div>
+    <div class="case-list" id="caseList"></div>
+
+    <!-- export -->
+    <button class="adm-export-btn" onclick="exportCSV()">📥 Export CSV ทั้งหมด</button>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════ KNOWLEDGE OVERLAY ══════════════════ -->
+<div id="knowledgeOverlay">
+  <div class="know-bar">
+    <button class="know-bar-back" onclick="closeKnowledge()">← กลับ</button>
+    <h2>📖 คู่มือแปลผล Hb Typing</h2>
+    <div style="width:80px"></div>
+  </div>
+  <div class="know-content" id="knowContent">
+    <input class="know-search" type="text" placeholder="🔍 ค้นหาในคู่มือ..." oninput="searchKnowledge(this.value)" id="knowSearchInput">
+    <div class="know-toc">
+      <button class="know-toc-btn" onclick="scrollToKnow('know_s1')">1. ฮีโมโกลบิน</button>
+      <button class="know-toc-btn" onclick="scrollToKnow('know_s2')">2. ยีนที่เกี่ยวข้อง</button>
+      <button class="know-toc-btn" onclick="scrollToKnow('know_s3')">3. พาหะ vs โรค</button>
+      <button class="know-toc-btn" onclick="scrollToKnow('know_s4')">4. ตารางแปลผล</button>
+      <button class="know-toc-btn" onclick="scrollToKnow('know_s5')">5. โอกาสในลูก</button>
+      <button class="know-toc-btn" onclick="scrollToKnow('know_s6')">6. ทริกจำ</button>
+    </div>
+    <div id="knowBody"></div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- ══ MOM ══ -->
+<div class="pcard mom">
+  <div class="phead mom-head">
+    <div class="phead-emoji">👩</div>
+    <div class="phead-text"><h3>แม่ (มารดา)</h3><p>CBC + Hb Typing</p></div>
+    <div class="mtog">
+      <button class="mt-btn on" id="m_num_btn" onclick="setMode('m','num')">🔢 ค่า %</button>
+      <button class="mt-btn" id="m_dd_btn" onclick="setMode('m','dd')">📋 เลือก</button>
+    </div>
+  </div>
+
+  <button class="scan-btn" onclick="openScanOverlay('m')">
+    <div class="sc-ic">📷</div>
+    <div class="sc-txt">สแกนใบรายงานผลแม่<span>ถ่ายรูป/อัปโหลด — AI อ่านค่าให้อัตโนมัติ</span></div>
+    <span style="margin-left:auto;font-size:18px;opacity:0.5">›</span>
+  </button>
+  <div class="iarea" id="m_numarea">
+    <div class="sublbl">CBC</div>
+    <div class="ig3">
+      <div class="fld"><label>Hb <span class="u">g/dL</span></label><div class="fw"><input type="number" id="m_hb" inputmode="decimal" step="0.1" placeholder="—"><span class="un">g</span></div></div>
+      <div class="fld"><label>MCV <span class="u">fL</span></label><div class="fw"><input type="number" id="m_mcv" inputmode="decimal" step="0.1" placeholder="—"><span class="un">fL</span></div></div>
+      <div class="fld"><label>MCH <span class="u">pg</span></label><div class="fw"><input type="number" id="m_mch" inputmode="decimal" step="0.1" placeholder="—"><span class="un">pg</span></div></div>
+    </div>
+    <div class="sublbl">Hb Typing</div>
+    <div class="ig3">
+      <div class="fld"><label>HbA <span class="u">%</span></label><div class="fw"><input type="number" id="m_hba" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+      <div class="fld"><label>HbA₂ <span class="u">%</span></label><div class="fw"><input type="number" id="m_hba2" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+      <div class="fld"><label>HbF <span class="u">%</span></label><div class="fw"><input type="number" id="m_hbf" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+    </div>
+    <div class="ig3" style="margin-bottom:14px">
+      <div class="fld"><label>HbE <span class="u">%</span></label><div class="fw"><input type="number" id="m_hbe" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+      <div class="fld"><label>HbH <span class="u">%</span></label><div class="fw"><input type="number" id="m_hbh" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+      <div class="fld"><label>Bart's <span class="u">%</span></label><div class="fw"><input type="number" id="m_barts" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="ddmode" id="m_ddarea">
+    <div class="dd-lbl">เลือกผลการแปล Hb Typing ของแม่</div>
+    <select class="dd-sel" id="m_ddsel" onchange="onDd('m')">
+      <option value="">-- กรุณาเลือก --</option>
+      <option value="AA">ปกติ (AA)</option>
+      <option value="β/β⁰">β-thal Trait</option>
+      <option value="A/E">HbE Trait</option>
+      <option value="?_alpha">สงสัย α-thal Trait (MCV/MCH ต่ำ Typing ปกติ)</option>
+      <option value="E/E">HbE Disease (Homozygous)</option>
+      <option value="β⁰/β⁰">β-thal Major</option>
+      <option value="−−/−α">HbH Disease</option>
+      <option value="βE/β⁰">HbE/β-thal</option>
+      <option value="other">อื่นๆ / ไม่ทราบ</option>
+    </select>
+  </div>
+
+  <div class="ares" id="m_result">
+    <div class="ares-inner">
+      <div class="rcard rc-mom">
+        <div class="rc-top">
+          <div class="rc-diag" id="m_diag">—</div>
+          <div class="rc-geno" id="m_geno">—</div>
+        </div>
+        <p class="rc-desc" id="m_desc">—</p>
+        <div class="why-rows" id="m_whyrows"></div>
+        <button class="btn-why" id="m_whybtn" onclick="toggleWhy('m')">
+          <span class="why-arr">›</span> ดูเหตุผลที่แปลผลแบบนี้
+        </button>
+        <div class="why-detail" id="m_whydetail">
+          <ul class="why-list" id="m_whylist"></ul>
+        </div>
+      </div>
+      <div id="m_pcrbox"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DAD ══ -->
+<div class="pcard dad">
+  <div class="phead dad-head">
+    <div class="phead-emoji">👨</div>
+    <div class="phead-text"><h3>พ่อ (บิดา)</h3><p>CBC + Hb Typing</p></div>
+    <div class="mtog">
+      <button class="mt-btn on" id="d_num_btn" onclick="setMode('d','num')">🔢 ค่า %</button>
+      <button class="mt-btn" id="d_dd_btn" onclick="setMode('d','dd')">📋 เลือก</button>
+    </div>
+  </div>
+
+  <button class="scan-btn" onclick="openScanOverlay('d')">
+    <div class="sc-ic">📷</div>
+    <div class="sc-txt">สแกนใบรายงานผลพ่อ<span>ถ่ายรูป/อัปโหลด — AI อ่านค่าให้อัตโนมัติ</span></div>
+    <span style="margin-left:auto;font-size:18px;opacity:0.5">›</span>
+  </button>
+  <div class="iarea" id="d_numarea">
+    <div class="sublbl">CBC</div>
+    <div class="ig3">
+      <div class="fld"><label>Hb <span class="u">g/dL</span></label><div class="fw"><input type="number" id="d_hb" inputmode="decimal" step="0.1" placeholder="—"><span class="un">g</span></div></div>
+      <div class="fld"><label>MCV <span class="u">fL</span></label><div class="fw"><input type="number" id="d_mcv" inputmode="decimal" step="0.1" placeholder="—"><span class="un">fL</span></div></div>
+      <div class="fld"><label>MCH <span class="u">pg</span></label><div class="fw"><input type="number" id="d_mch" inputmode="decimal" step="0.1" placeholder="—"><span class="un">pg</span></div></div>
+    </div>
+    <div class="sublbl">Hb Typing</div>
+    <div class="ig3">
+      <div class="fld"><label>HbA <span class="u">%</span></label><div class="fw"><input type="number" id="d_hba" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+      <div class="fld"><label>HbA₂ <span class="u">%</span></label><div class="fw"><input type="number" id="d_hba2" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+      <div class="fld"><label>HbF <span class="u">%</span></label><div class="fw"><input type="number" id="d_hbf" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+    </div>
+    <div class="ig3" style="margin-bottom:14px">
+      <div class="fld"><label>HbE <span class="u">%</span></label><div class="fw"><input type="number" id="d_hbe" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+      <div class="fld"><label>HbH <span class="u">%</span></label><div class="fw"><input type="number" id="d_hbh" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+      <div class="fld"><label>Bart's <span class="u">%</span></label><div class="fw"><input type="number" id="d_barts" inputmode="decimal" step="0.1" placeholder="—"><span class="un">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="ddmode" id="d_ddarea">
+    <div class="dd-lbl">เลือกผลการแปล Hb Typing ของพ่อ</div>
+    <select class="dd-sel" id="d_ddsel" onchange="onDd('d')">
+      <option value="">-- กรุณาเลือก --</option>
+      <option value="AA">ปกติ (AA)</option>
+      <option value="β/β⁰">β-thal Trait</option>
+      <option value="A/E">HbE Trait</option>
+      <option value="?_alpha">สงสัย α-thal Trait (MCV/MCH ต่ำ Typing ปกติ)</option>
+      <option value="E/E">HbE Disease (Homozygous)</option>
+      <option value="β⁰/β⁰">β-thal Major</option>
+      <option value="−−/−α">HbH Disease</option>
+      <option value="βE/β⁰">HbE/β-thal</option>
+      <option value="other">อื่นๆ / ไม่ทราบ</option>
+    </select>
+  </div>
+
+  <div class="ares" id="d_result">
+    <div class="ares-inner">
+      <div class="rcard rc-dad">
+        <div class="rc-top">
+          <div class="rc-diag" id="d_diag">—</div>
+          <div class="rc-geno" id="d_geno">—</div>
+        </div>
+        <p class="rc-desc" id="d_desc">—</p>
+        <div class="why-rows" id="d_whyrows"></div>
+        <button class="btn-why" id="d_whybtn" onclick="toggleWhy('d')">
+          <span class="why-arr">›</span> ดูเหตุผลที่แปลผลแบบนี้
+        </button>
+        <div class="why-detail" id="d_whydetail">
+          <ul class="why-list" id="d_whylist"></ul>
+        </div>
+      </div>
+      <div id="d_pcrbox"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ COUPLE RESULT ══ -->
+<div class="couple-sec" id="coupleSection">
+  <div class="sec-lbl"><div class="sec-lbl-dot"></div><div class="sec-lbl-txt">ผลการจับคู่และความเสี่ยงลูก</div></div>
+
+  <div class="pbanner">
+    <div class="pchips">
+      <div class="pchip pc-m"><small>แม่</small><span id="c_mgeno">—</span></div>
+      <div class="px">×</div>
+      <div class="pchip pc-d"><small>พ่อ</small><span id="c_dgeno">—</span></div>
+    </div>
+  </div>
+
+  <div class="abox" id="c_alert">
+    <div class="abox-icon" id="c_alerticon">—</div>
+    <div class="abox-body"><h3 id="c_alerttitle">—</h3><p id="c_alertdesc">—</p></div>
+  </div>
+
+  <div class="cwrap">
+    <div class="cwhead">📊 โอกาสที่ลูกจะได้รับ Genotype</div>
+    <div class="cwbody"><div class="rgrid" id="c_riskgrid"></div></div>
+  </div>
+
+  <div class="lbox"><div class="lbox-h">💡 รู้ไว้เพื่อเข้าใจ</div><p id="c_learn">—</p></div>
+
+  <div class="cwhead" style="background:none;border:none;padding:0 2px 8px;font-size:10.5px;font-weight:700;letter-spacing:1px;color:var(--text2);text-transform:uppercase">✅ ควรทำอะไรต่อ</div>
+  <div class="astack" id="c_actions"></div>
+
+  <div id="c_scenWrap" style="display:none">
+    <div class="cwrap">
+      <div class="cwhead">🔬 ระหว่างรอผล PCR</div>
+      <div class="cwbody" id="c_scenarios"></div>
+    </div>
+  </div>
+
+  <div id="c_pcrPrompt" style="display:none!important"></div>
+
+  <!-- NEW: Per-person PCR detail section -->
+  <div class="pcr-detail-sec" id="pcrDetailSec" style="display:none">
+    <div class="pcr-detail-hd">
+      <div class="pcr-detail-hd-ic">🧪</div>
+      <div><h4>ผล PCR รายบุคคล</h4><p>กรอกผล PCR ของแม่และพ่อแยกกัน เพื่อประเมินความเสี่ยงลูก</p></div>
+    </div>
+
+    <!-- แม่ -->
+    <div class="pcr-person-row">
+      <div class="pcr-person-lbl pcr-mom-lbl">👩 แม่ — ชนิด PCR</div>
+      <div class="pcr-type-row">
+        <div class="pcr-type-chip inactive" id="mPcrTypeAlpha" onclick="setPcrType('m','alpha')">🔵 α-globin</div>
+        <div class="pcr-type-chip inactive" id="mPcrTypeBeta" onclick="setPcrType('m','beta')">🟠 β-globin</div>
+        <div class="pcr-type-chip inactive" id="mPcrTypeBoth" onclick="setPcrType('m','both')">🔵🟠 ทั้งคู่</div>
+        <div class="pcr-type-chip inactive" id="mPcrTypeNone" onclick="setPcrType('m','none')">— ไม่ส่ง</div>
+      </div>
+      <div class="pcr-result-btns" id="mPcrResultBtns" style="display:none">
+        <button class="pcr-rbtn pend" id="mPcrPend" onclick="setPcrResult('m','pend')">⏳ รอผล</button>
+        <button class="pcr-rbtn pos" id="mPcrPos" onclick="setPcrResult('m','positive')">🔴 Positive</button>
+        <button class="pcr-rbtn neg" id="mPcrNeg" onclick="setPcrResult('m','negative')">🟢 Negative</button>
+      </div>
+    </div>
+
+    <!-- พ่อ -->
+    <div class="pcr-person-row">
+      <div class="pcr-person-lbl pcr-dad-lbl">👨 พ่อ — ชนิด PCR</div>
+      <div class="pcr-type-row">
+        <div class="pcr-type-chip inactive" id="dPcrTypeAlpha" onclick="setPcrType('d','alpha')">🔵 α-globin</div>
+        <div class="pcr-type-chip inactive" id="dPcrTypeBeta" onclick="setPcrType('d','beta')">🟠 β-globin</div>
+        <div class="pcr-type-chip inactive" id="dPcrTypeBoth" onclick="setPcrType('d','both')">🔵🟠 ทั้งคู่</div>
+        <div class="pcr-type-chip inactive" id="dPcrTypeNone" onclick="setPcrType('d','none')">— ไม่ส่ง</div>
+      </div>
+      <div class="pcr-result-btns" id="dPcrResultBtns" style="display:none">
+        <button class="pcr-rbtn pend" id="dPcrPend" onclick="setPcrResult('d','pend')">⏳ รอผล</button>
+        <button class="pcr-rbtn pos" id="dPcrPos" onclick="setPcrResult('d','positive')">🔴 Positive</button>
+        <button class="pcr-rbtn neg" id="dPcrNeg" onclick="setPcrResult('d','negative')">🟢 Negative</button>
+      </div>
+    </div>
+
+    <!-- Combined result -->
+    <div class="pcr-combined-result" id="pcrCombinedResult"></div>
+  </div>
+
+  <!-- ── SAVE BUTTON ── -->
+  <button class="btn-save-case" id="btnSaveCase" onclick="saveCase()">
+    💾 บันทึกเคสนี้
+  </button>
+
+  <button class="btn-reset" onclick="resetAll()">🔄 ประเมินคู่ใหม่</button>
+  <div class="footnote">
+    NamYuen Thal Screen · พัฒนาโดย Jariya H.<br>
+    คลินิกฝากครรภ์ โรงพยาบาลน้ำยืน · สำหรับบุคลากรทางการแพทย์เท่านั้น<br>
+    <button class="admin-link" onclick="openAdmin()">สำหรับเจ้าหน้าที่</button>
+  </div>
+</div>
+
+</div><!-- end content -->
+
+<script>
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS — แก้ URL ตรงนี้
+// ══════════════════════════════════════════════
+const GS_URL = 'https://script.google.com/macros/s/AKfycbyShTlrEq3LHTrUq6U_8ZUXqTpScfO6Q9ZBEGgPdpFqWvICmYv3vnrPYTpAof90fCG_/exec'; // ใส่ Web App URL จาก Google Apps Script ที่นี่
+
+// ══════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════
+let CUT = { hba2: 3.5, hba2b: 3.2, mcv: 80, mch: 27 };
+
+function openSettings() { document.getElementById('settingsModal').classList.add('show'); }
+function closeSettingsOutside(e) { if (e.target === document.getElementById('settingsModal')) closeSettings(); }
+function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
+function saveSettings() {
+  CUT.hba2  = parseFloat(document.getElementById('cut_hba2').value)   || 3.5;
+  CUT.hba2b = parseFloat(document.getElementById('cut_hba2_b').value) || 3.2;
+  CUT.mcv   = parseFloat(document.getElementById('cut_mcv').value)    || 80;
+  CUT.mch   = parseFloat(document.getElementById('cut_mch').value)    || 27;
+  closeSettings();
+  reInterpretAll();
+  alert('บันทึกค่าแล้ว ✓');
+}
+
+// ══════════════════════════════════════════════
+// CASE STORAGE (localStorage)
+// ══════════════════════════════════════════════
+function getCases() {
+  try { return JSON.parse(localStorage.getItem('thal_cases') || '[]'); } catch(e){ return []; }
+}
+function saveCases(arr) {
+  localStorage.setItem('thal_cases', JSON.stringify(arr));
+}
+
+// ── Google Sheets URL (ใช้ constant GS_URL ที่ต้นไฟล์) ──
+function getGsUrl() { return (GS_URL && GS_URL !== 'YOUR_URL_HERE') ? GS_URL : ''; }
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+
+// ── SAVE CASE ──
+let currentRiskData = null; // stores latest couple risk
+
+function saveCase() {
+  if (!mData || !dData) { showToast('⚠️ ยังไม่มีผลแปล', 'err'); return; }
+  const btn = document.getElementById('btnSaveCase');
+  btn.disabled = true;
+  btn.textContent = '⏳ กำลังบันทึก…';
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('th-TH',{year:'numeric',month:'2-digit',day:'2-digit'});
+  const timeStr = now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+
+  // capture raw input values
+  function gvSave(id) { const v = document.getElementById(id)?.value; return (v !== '' && v !== undefined && v !== null) ? v : null; }
+  const momRaw = { hb: gvSave('m_hb'), mcv: gvSave('m_mcv'), mch: gvSave('m_mch'), hba: gvSave('m_hba'), hba2: gvSave('m_hba2'), hbf: gvSave('m_hbf'), hbe: gvSave('m_hbe'), hbh: gvSave('m_hbh'), barts: gvSave('m_barts') };
+  const dadRaw = { hb: gvSave('d_hb'), mcv: gvSave('d_mcv'), mch: gvSave('d_mch'), hba: gvSave('d_hba'), hba2: gvSave('d_hba2'), hbf: gvSave('d_hbf'), hbe: gvSave('d_hbe'), hbh: gvSave('d_hbh'), barts: gvSave('d_barts') };
+  const momDdVal = document.getElementById('m_ddsel')?.value || '';
+  const dadDdVal = document.getElementById('d_ddsel')?.value || '';
+
+  const caseObj = {
+    id: Date.now(),
+    date: dateStr,
+    time: timeStr,
+    mom_pattern: mData.diag,
+    mom_geno: mData.geno,
+    mom_raw: momRaw,
+    mom_dd: momDdVal,
+    mom_desc: mData.desc || '',
+    dad_pattern: dData.diag,
+    dad_geno: dData.geno,
+    dad_raw: dadRaw,
+    dad_dd: dadDdVal,
+    dad_desc: dData.desc || '',
+    result_title: currentRiskData ? currentRiskData.title : '—',
+    result_level: currentRiskData ? currentRiskData.lv : '—',
+    pcr_needed: (mData.needPcr || dData.needPcr || (currentRiskData && currentRiskData.acts && currentRiskData.acts.some(a=>a.startsWith('pcr')))) ? 'ใช่' : 'ไม่',
+    note: '',
+    verified: false,
+    verified_by: '',
+    verified_role: '',
+    verified_correct: null
+  };
+
+  // save locally
+  const cases = getCases();
+  cases.unshift(caseObj);
+  saveCases(cases);
+
+  // sync to Google Sheets
+  const gsUrl = getGsUrl();
+  if (gsUrl) {
+    const payload = {
+      timestamp: dateStr + ' ' + timeStr,
+      mom_pattern: caseObj.mom_pattern,
+      mom_geno: caseObj.mom_geno,
+      dad_pattern: caseObj.dad_pattern,
+      dad_geno: caseObj.dad_geno,
+      result: caseObj.result_title,
+      pcr_needed: caseObj.pcr_needed
+    };
+    fetch(gsUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    }).then(() => {
+      showToast('✅ บันทึกและส่ง Sheets แล้ว', 'ok');
+    }).catch(() => {
+      showToast('💾 บันทึกในเครื่องแล้ว (Sheets offline)', 'ok');
+    });
+  } else {
+    showToast('💾 บันทึกในเครื่องแล้ว', 'ok');
+  }
+
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.innerHTML = '✔️ บันทึกแล้ว — กด Reset เพื่อเริ่มใหม่';
+    btn.style.background = 'linear-gradient(135deg,#145a32,#1e8449)';
+  }, 600);
+}
+
+// ══════════════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════════════
+const ADMIN_PIN = '111111';
+let adminAuthed = false;
+
+function openAdmin() {
+  document.getElementById('adminOverlay').classList.add('show');
+  if (!adminAuthed) {
+    document.getElementById('admLogin').style.display = 'flex';
+    document.getElementById('admContent').style.display = 'none';
+    document.getElementById('admPinInput').value = '';
+    document.getElementById('admErr').style.display = 'none';
+    setTimeout(()=>document.getElementById('admPinInput').focus(), 300);
+  } else {
+    renderAdminDashboard();
+  }
+}
+function closeAdmin() {
+  document.getElementById('adminOverlay').classList.remove('show');
+}
+function checkPin() {
+  const val = document.getElementById('admPinInput').value;
+  if (val === ADMIN_PIN) {
+    adminAuthed = true;
+    document.getElementById('admLogin').style.display = 'none';
+    document.getElementById('admContent').style.display = 'block';
+    renderAdminDashboard();
+  } else {
+    document.getElementById('admErr').style.display = 'block';
+    document.getElementById('admPinInput').value = '';
+    document.getElementById('admPinInput').focus();
+  }
+}
+
+function renderAdminDashboard() {
+  // Normalize old geno labels
+  function normalizeGeno(g) {
+    if (!g) return g;
+    return g
+      .replace(/\bA\/E\b/g, 'β/βᴱ')
+      .replace(/\bE\/E\b/g, 'βᴱ/βᴱ')
+      .replace(/\bβE\/β⁰\b/g, 'βᴱ/β⁰')
+      .replace(/−−\/−α/g, '−−/α−');
+  }
+
+  // Visit counter
+  let visitCount = parseInt(localStorage.getItem('thal_visit_count') || '0');
+  const visitEl = document.getElementById('visitCountDisplay');
+  if (visitEl) visitEl.textContent = `👁 เปิดใช้งาน ${visitCount} ครั้ง`;
+
+  const cases = getCases();
+  const total = cases.length;
+  const riskCount = cases.filter(c=>c.result_level==='r').length;
+  const pcrCount  = cases.filter(c=>c.pcr_needed==='ใช่').length;
+  const pendingCount = cases.filter(c => !c.verified && (c.pcr_needed === 'ใช่' || c.result_level === 'r' || c.result_level === 'y')).length;
+  const verifAll  = cases.filter(c=>c.verified);
+  const verifOk   = verifAll.filter(c=>c.verified_correct===true).length;
+  const verifErr  = verifAll.filter(c=>c.verified_correct===false).length;
+  const verifTotal= verifAll.length;
+
+  const pct = (n) => total > 0 ? ` (${Math.round(n/total*100)}%)` : '';
+  const pctV= (n) => verifTotal > 0 ? ` (${Math.round(n/verifTotal*100)}%)` : '';
+
+  document.getElementById('st_total').textContent = total;
+  document.getElementById('st_risk').textContent  = riskCount;
+  document.getElementById('st_risk_lbl').textContent = `คู่เสี่ยง (แดง)${pct(riskCount)}`;
+  document.getElementById('st_pcr').textContent   = pcrCount;
+  document.getElementById('st_pcr_lbl').textContent  = `ส่ง PCR${pct(pcrCount)}`;
+  document.getElementById('st_pending').textContent = pendingCount;
+  document.getElementById('st_verif').textContent = verifTotal;
+  const verifDetail = verifTotal > 0
+    ? `✅ แปลถูก ${verifOk} ราย${pctV(verifOk)}<br>❌ แปลผิด ${verifErr} ราย${pctV(verifErr)}`
+    : '';
+  document.getElementById('st_verif_detail').innerHTML = verifDetail;
+
+  // pattern frequency
+  const patCount = {};
+  cases.forEach(c => {
+    const mg = normalizeGeno(c.mom_geno) || '?';
+    const dg = normalizeGeno(c.dad_geno) || '?';
+    const key = mg + ' × ' + dg;
+    patCount[key] = (patCount[key]||0) + 1;
+  });
+  const sorted = Object.entries(patCount).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxPat = sorted.length ? sorted[0][1] : 1;
+  const patHtml = sorted.map(([k,v]) =>
+    `<div class="pat-row">
+      <div class="pat-name">${k}</div>
+      <div class="pat-bar-wrap"><div class="pat-bar" style="width:${Math.round(v/maxPat*100)}%"></div></div>
+      <div class="pat-cnt">${v}</div>
+    </div>`
+  ).join('') || '<div style="color:#94a3b8;font-size:13px;padding:4px 0">ยังไม่มีข้อมูล</div>';
+  document.getElementById('patList').innerHTML = patHtml;
+
+  // case list
+  if (!cases.length) {
+    document.getElementById('caseList').innerHTML = '<div style="color:#94a3b8;font-size:13px;padding:4px 0">ยังไม่มีเคส</div>';
+    return;
+  }
+
+  // helper: map result_level to badge class + label
+  function getResBadge(c) {
+    const t = c.result_title || '';
+    const lv = c.result_level || '';
+    const pcr = c.pcr_needed === '\u0E43\u0E0A\u0E48';
+    const allText = [c.mom_geno, c.dad_geno, c.mom_pattern, c.dad_pattern, t].join(' ').toLowerCase();
+    const isAlpha = allText.includes('\u03B1') || allText.includes('alpha') || allText.includes('?_alpha') || allText.includes('\u0E2A\u0E07\u0E2A\u0E31\u0E22 \u03B1');
+    const isBeta  = allText.includes('\u03B2') || allText.includes('beta') || allText.includes('\u0E40\u0E1A\u0E15\u0E49\u0E32');
+    const isHbE   = allText.includes('hbe') || allText.includes('e/e') || allText.includes('a/e');
+    if (lv === 'g' && !pcr) return ['rb-normal','\u2705 \u0E1C\u0E25\u0E1B\u0E01\u0E15\u0E34 \u2014 \u0E44\u0E21\u0E48\u0E1E\u0E1A\u0E04\u0E27\u0E32\u0E21\u0E40\u0E2A\u0E35\u0E48\u0E22\u0E07'];
+    if (pcr && isAlpha && isBeta) return ['rb-pcr-alpha','\uD83E\uDDEC \u0E15\u0E49\u0E2D\u0E07\u0E2A\u0E48\u0E07 PCR for Alpha + Beta'];
+    if (pcr && isAlpha)           return ['rb-pcr-alpha','\uD83E\uDDEC \u0E15\u0E49\u0E2D\u0E07\u0E2A\u0E48\u0E07 PCR for Alpha \u2014 \u0E22\u0E37\u0E19\u0E22\u0E31\u0E19 genotype'];
+    if (pcr && isBeta)            return ['rb-pcr-beta', '\uD83E\uDDEC \u0E15\u0E49\u0E2D\u0E07\u0E2A\u0E48\u0E07 PCR for Beta \u2014 \u0E22\u0E37\u0E19\u0E22\u0E31\u0E19 genotype'];
+    if (pcr && isHbE)             return ['rb-pcr-beta', '\uD83E\uDDEC \u0E15\u0E49\u0E2D\u0E07\u0E2A\u0E48\u0E07 PCR for HbE/\u03B2-globin'];
+    if (pcr)                      return ['rb-pcr-alpha','\uD83E\uDDEC \u0E15\u0E49\u0E2D\u0E07\u0E2A\u0E48\u0E07 PCR \u2014 \u0E22\u0E37\u0E19\u0E22\u0E31\u0E19 genotype'];
+    if (lv === 'r') return ['rb-risk','\u26A0\uFE0F \u0E04\u0E39\u0E48\u0E40\u0E2A\u0E35\u0E48\u0E22\u0E07 \u2014 \u0E2A\u0E48\u0E07\u0E1E\u0E1A\u0E41\u0E1E\u0E17\u0E22\u0E4C'];
+    if (lv === 'y') return ['rb-watch','\uD83D\uDC40 \u0E15\u0E34\u0E14\u0E15\u0E32\u0E21\u0E43\u0E01\u0E25\u0E49\u0E0A\u0E34\u0E14'];
+    return ['rb-watch', t || '\u0E44\u0E21\u0E48\u0E17\u0E23\u0E32\u0E1A\u0E1C\u0E25'];
+  }
+
+  document.getElementById('caseList').innerHTML = cases.map((c,i) => {
+    const [badgeClass, badgeLabel] = getResBadge(c);
+
+    // ── helper: build compact inline lab string (only filled values)
+    function labLine(raw, geno) {
+      if (!raw) return geno || '—';
+      const fields = [
+        raw.hb   != null && raw.hb   !== '' ? `Hb ${raw.hb}`    : null,
+        raw.mcv  != null && raw.mcv  !== '' ? `MCV ${raw.mcv}`  : null,
+        raw.mch  != null && raw.mch  !== '' ? `MCH ${raw.mch}`  : null,
+        raw.hba  != null && raw.hba  !== '' ? `HbA ${raw.hba}%` : null,
+        raw.hba2 != null && raw.hba2 !== '' ? `HbA₂ ${raw.hba2}%` : null,
+        raw.hbf  != null && raw.hbf  !== '' ? `HbF ${raw.hbf}%`  : null,
+        raw.hbe  != null && raw.hbe  !== '' ? `HbE ${raw.hbe}%`  : null,
+        raw.hbh  != null && raw.hbh  !== '' ? `HbH ${raw.hbh}%`  : null,
+        raw.barts!= null && raw.barts!== '' ? `Bart's ${raw.barts}%` : null,
+      ].filter(Boolean);
+      const vals = fields.length ? fields.join(' · ') : (geno || '—');
+      return vals;
+    }
+
+    const momRaw = c.mom_raw || {};
+    const dadRaw = c.dad_raw || {};
+    const hasNumMom = momRaw.hb || momRaw.mcv || momRaw.hba2;
+    const hasNumDad = dadRaw.hb || dadRaw.mcv || dadRaw.hba2;
+
+    // Line 1: mom
+    const momLine = hasNumMom
+      ? `<div class="cc-line cc-mom-line"><span class="lbl">👩 แม่:</span>${labLine(momRaw, c.mom_geno)}</div>`
+      : `<div class="cc-line cc-mom-line"><span class="lbl">👩 แม่:</span>${c.mom_pattern||'—'} <span style="font-family:monospace;font-size:11px;background:#f5eef8;color:#7d3c98;padding:1px 6px;border-radius:4px;margin-left:4px">${c.mom_geno||''}</span></div>`;
+
+    // Line 2: dad
+    const dadLine = hasNumDad
+      ? `<div class="cc-line cc-dad-line" style="border-top:1px solid #f0f0f5;padding-top:5px;margin-top:2px"><span class="lbl">👨 พ่อ:</span>${labLine(dadRaw, c.dad_geno)}</div>`
+      : `<div class="cc-line cc-dad-line" style="border-top:1px solid #f0f0f5;padding-top:5px;margin-top:2px"><span class="lbl">👨 พ่อ:</span>${c.dad_pattern||'—'} <span style="font-family:monospace;font-size:11px;background:#d6eaf8;color:#1a5276;padding:1px 6px;border-radius:4px;margin-left:4px">${c.dad_geno||''}</span></div>`;
+
+    // Line 3: interpretation
+    const interpLine = `<div class="cc-interp" style="border-top:1px solid #f0f0f5;padding-top:5px;margin-top:2px">
+      <span style="color:#7d3c98;font-weight:700">ภรรยา ผล:</span> ${c.mom_pattern||'—'} <span style="font-family:monospace;font-size:11px;background:#f5eef8;color:#7d3c98;padding:1px 6px;border-radius:4px">${c.mom_geno||''}</span>
+      <span style="color:#94a3b8;margin:0 6px">·</span>
+      <span style="color:#1a5276;font-weight:700">สามี ผล:</span> ${c.dad_pattern||'—'} <span style="font-family:monospace;font-size:11px;background:#d6eaf8;color:#1a5276;padding:1px 6px;border-radius:4px">${c.dad_geno||''}</span>
+    </div>`;
+
+    // Badge + report
+    const reportLine = `<div class="cc-badge-row" style="border-top:1px solid #f0f0f5;margin-top:4px;padding-top:6px">
+      <span class="res-badge ${badgeClass}">${badgeLabel}</span>
+    </div>`;
+
+    // Note area (auto-saved on verify)
+    const noteVal = (c.note||'').replace(/"/g,'&quot;');
+    const noteLine = `<div style="margin-top:4px">
+      <textarea class="note-area" id="vnote_${i}" placeholder="หมายเหตุ... (บันทึกอัตโนมัติเมื่อกด ✅ หรือ ❌)">${noteVal}</textarea>
+    </div>`;
+
+    // Verification block
+    const verifHtml = c.verified
+      ? `<div class="cc-sep"></div>
+         <div class="verif-done ${c.verified_correct?'vd-ok':'vd-err'}" style="font-size:12px">
+           ${c.verified_correct ? '✅ แปลถูกต้อง' : '❌ แปลผิด'} · ${c.verified_by} (${c.verified_role})
+         </div>
+         ${c.note ? `<div style="font-size:12px;color:#4a5568;margin-top:4px;background:#f8fafc;border-radius:7px;padding:6px 9px;border:1px solid #e2e8f0"><strong>หมายเหตุ:</strong> ${c.note}</div>` : ''}`
+      : `<div class="cc-sep"></div>
+         <div class="cc-verif-block">
+           <div class="cc-verif-hd">ตรวจสอบ</div>
+           ${noteLine}
+           <div class="verif-row" style="margin-top:7px">
+             <input class="verif-name" type="text" placeholder="ชื่อผู้ตรวจสอบ" id="vname_${i}">
+             <select class="verif-role" id="vrole_${i}">
+               <option value="">ตำแหน่ง</option>
+               <option value="พยาบาล">พยาบาล</option>
+               <option value="ผลในระบบ สปสช.">ผลในระบบ สปสช.</option>
+               <option value="แพทย์">แพทย์</option>
+             </select>
+           </div>
+           <div class="verif-btns" style="margin-top:6px">
+             <button class="vbtn vbtn-ok" onclick="verifCase(${i},true)">✅ แปลถูก</button>
+             <button class="vbtn vbtn-err" onclick="verifCase(${i},false)">❌ แปลผิด</button>
+           </div>
+         </div>`;
+
+    // PCR result block (only for cases that need PCR) — read-only badge
+    let pcrResHtml = '';
+    if (c.pcr_needed === 'ใช่') {
+      const pcrSaved = c.pcr_result || '';
+      let pcrBadge = '';
+      let interpHtml = '';
+      if (pcrSaved === 'positive') {
+        pcrBadge = `<span style="display:inline-flex;align-items:center;gap:5px;background:#fdedec;border:1.5px solid #f1948a;color:#c0392b;font-size:13px;font-weight:700;padding:5px 12px;border-radius:20px">🔴 PCR Positive</span>`;
+        interpHtml = `<div class="pcr-interp pcr-interp-pos" style="margin-top:6px">❗ <strong>ยืนยันความเสี่ยง</strong> — ส่งพบแพทย์ผู้เชี่ยวชาญทันที เพื่อวางแผน prenatal diagnosis และ genetic counseling</div>`;
+      } else if (pcrSaved === 'negative') {
+        pcrBadge = `<span style="display:inline-flex;align-items:center;gap:5px;background:#eafaf1;border:1.5px solid #a9dfbf;color:#1e8449;font-size:13px;font-weight:700;padding:5px 12px;border-radius:20px">🟢 PCR Negative</span>`;
+        interpHtml = `<div class="pcr-interp pcr-interp-neg" style="margin-top:6px">✅ <strong>ความเสี่ยงลดลง</strong> — ติดตาม ANC ปกติตามนัด แจ้งแพทย์ผู้ดูแลทราบผล PCR ไม่จำเป็นต้องส่งต่อเพิ่มเติม</div>`;
+      } else {
+        pcrBadge = `<span style="display:inline-flex;align-items:center;gap:5px;background:#f0f3f7;border:1.5px solid #94a3b8;color:#4a5568;font-size:13px;font-weight:700;padding:5px 12px;border-radius:20px">⏳ รอผล PCR</span>`;
+      }
+      pcrResHtml = `<div class="pcr-result-block">
+        <div class="pcr-result-hd">🧪 ผล PCR</div>
+        ${pcrBadge}
+        ${interpHtml}
+      </div>`;
+    }
+
+    return `<div class="case-card" id="case_${i}">
+      <div class="case-top">
+        <div class="case-date">📅 ${c.date} ${c.time}</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:10px;font-weight:700;color:#94a3b8">#${cases.length - i}</span>
+          <button onclick="deleteCase(${i})" style="background:#fdedec;border:1px solid #f1948a;color:#c0392b;border-radius:7px;padding:3px 9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif" title="ลบเคสนี้">🗑️ ลบ</button>
+        </div>
+      </div>
+      ${momLine}
+      ${dadLine}
+      ${interpLine}
+      ${reportLine}
+      ${pcrResHtml}
+      ${verifHtml}
+    </div>`;
+  }).join('');
+}
+
+function deleteCase(idx) {
+  if (!confirm('ลบเคสนี้จริงๆ ไหมครับ? ไม่สามารถกู้คืนได้')) return;
+  const cases = getCases();
+  cases.splice(idx, 1);
+  saveCases(cases);
+  showToast('🗑️ ลบเคสแล้ว', 'ok');
+  renderAdminDashboard();
+}
+
+function saveNote(idx) {
+  const note = document.getElementById('vnote_'+idx)?.value || '';
+  const cases = getCases();
+  cases[idx].note = note;
+  saveCases(cases);
+  const ns = document.getElementById('notesaved_'+idx);
+  if (ns) { ns.style.display='block'; setTimeout(()=>ns.style.display='none', 2000); }
+}
+
+function verifCase(idx, correct) {
+  const note = document.getElementById('vnote_'+idx)?.value || '';
+  const name = document.getElementById('vname_'+idx)?.value?.trim();
+  const role = document.getElementById('vrole_'+idx)?.value;
+  if (!name) { showToast('กรุณาใส่ชื่อผู้ตรวจสอบ', 'err'); return; }
+  if (!role) { showToast('กรุณาเลือกตำแหน่ง', 'err'); return; }
+  const cases = getCases();
+  cases[idx].verified = true;
+  cases[idx].verified_by = name;
+  cases[idx].verified_role = role;
+  cases[idx].verified_correct = correct;
+  cases[idx].note = note;
+  saveCases(cases);
+  renderAdminDashboard();
+}
+
+function scrollToFirstUnverified() {
+  const cases = getCases();
+  const idx = cases.findIndex(c => !c.verified && (c.pcr_needed === 'ใช่' || c.result_level === 'r' || c.result_level === 'y'));
+  if (idx >= 0) {
+    const el = document.getElementById('case_' + idx);
+    if (el) el.scrollIntoView({behavior:'smooth', block:'center'});
+  } else {
+    showToast('ไม่มีเคสรอยืนยัน', 'ok');
+  }
+}
+
+// Visit counter — increment once per page load
+(function() {
+  let count = parseInt(localStorage.getItem('thal_visit_count') || '0');
+  count++;
+  localStorage.setItem('thal_visit_count', count);
+})();
+
+function exportCSV() {
+  const cases = getCases();
+  if (!cases.length) { showToast('ไม่มีข้อมูลให้ export', 'err'); return; }
+  const headers = ['ลำดับ','วันที่','เวลา','Pattern แม่','Genotype แม่','Pattern พ่อ','Genotype พ่อ','ผลการจับคู่','Risk Level','ส่ง PCR','หมายเหตุ','ตรวจสอบแล้ว','ตรวจสอบโดย','ตำแหน่ง','ผลการตรวจสอบ'];
+  const rows = cases.map((c,i) => [
+    i+1, c.date, c.time,
+    c.mom_pattern, c.mom_geno,
+    c.dad_pattern, c.dad_geno,
+    c.result_title, c.result_level,
+    c.pcr_needed,
+    c.note||'',
+    c.verified ? 'ใช่' : 'ไม่',
+    c.verified_by||'',
+    c.verified_role||'',
+    c.verified_correct===true?'ถูก':c.verified_correct===false?'ผิด':''
+  ]);
+  const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const bom = '\uFEFF'; // UTF-8 BOM for Excel Thai
+  const blob = new Blob([bom + csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'thal_cases_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════════
+// MODE
+// ══════════════════════════════════════════════
+function setMode(p, mode) {
+  const numArea = document.getElementById(p+'_numarea');
+  const ddArea  = document.getElementById(p+'_ddarea');
+  const numBtn  = document.getElementById(p+'_num_btn');
+  const ddBtn   = document.getElementById(p+'_dd_btn');
+  if (mode === 'num') {
+    numArea.style.display = ''; ddArea.classList.remove('show');
+    numBtn.classList.add('on'); ddBtn.classList.remove('on');
+  } else {
+    numArea.style.display = 'none'; ddArea.classList.add('show');
+    ddBtn.classList.add('on'); numBtn.classList.remove('on');
+  }
+  hideResult(p);
+}
+
+// ══════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════
+function gv(id) { const v = parseFloat(document.getElementById(id)?.value); return isNaN(v) ? null : v; }
+
+function hideResult(p) {
+  document.getElementById(p+'_result').classList.remove('show');
+  if (p==='m') mData=null; else dData=null;
+  document.getElementById('coupleSection').classList.remove('show');
+}
+
+// ══════════════════════════════════════════════
+// INTERPRET
+// ══════════════════════════════════════════════
+function interpret(p) {
+  const hb    = gv(p+'_hb'),  mcv = gv(p+'_mcv'), mch = gv(p+'_mch');
+  const hba   = gv(p+'_hba'), hba2= gv(p+'_hba2'),hbf = gv(p+'_hbf');
+  const hbe   = gv(p+'_hbe'), hbh = gv(p+'_hbh'), barts=gv(p+'_barts');
+  const hasTyping = [hba,hba2,hbf,hbe,hbh,barts].some(v=>v!==null);
+  if (!hasTyping && mcv===null && mch===null) return null;
+
+  const R=[]; const D=[];
+  let diag='ไม่สามารถแปลผลได้', geno='?', desc='กรอกข้อมูลให้ครบ', needPcr=null;
+
+  const mcvLo = mcv!==null && mcv<CUT.mcv;
+  const mchLo = mch!==null && mch<CUT.mch;
+
+  if (barts!==null && barts>=60) {
+    diag='Hb Bart\'s Hydrops Fetalis'; geno='−−/−−';
+    desc='α-thalassemia รุนแรงที่สุด ขาด α-gene ทั้ง 4 ตำแหน่ง';
+    R.push({t:'hi',  txt:`Hb Bart's = ${barts}% → สูงมาก (≥60%)`});
+    D.push({t:'hi',  txt:`Hb Bart's ≥60% บ่งชี้ขาด α-globin gene ทั้ง 4 ตำแหน่ง (−−/−−)`});
+    return {diag,geno,desc,R,D,needPcr};
+  }
+  if (hbh!==null && hbh>=5) {
+    diag='HbH Disease'; geno='−−/α−';
+    desc='α-thalassemia ขาด 3 gene ซีดเรื้อรัง';
+    R.push({t:'hi', txt:`HbH = ${hbh}% → ตรวจพบ HbH (ปกติ = 0%)`});
+    if(mcvLo) D.push({t:'lo', txt:`MCV = ${mcv} fL → ต่ำกว่า ${CUT.mcv} fL สอดคล้อง`});
+    return {diag,geno,desc,R,D,needPcr};
+  }
+  if (hbf!==null && hbf>=90 && (hba===null||hba<10)) {
+    diag='β-thal Major'; geno='β⁰/β⁰';
+    desc='ไม่มี HbA HbF สูงมาก ต้องรับเลือดตลอดชีวิต';
+    R.push({t:'hi', txt:`HbF = ${hbf}% → สูงมาก (≥90%)`});
+    if(hba!==null) D.push({t:'lo', txt:`HbA = ${hba}% → แทบไม่มี`});
+    return {diag,geno,desc,R,D,needPcr};
+  }
+  if (hbe!==null && hbe>=80 && (hba===null||hba<10)) {
+    diag='HbE Disease'; geno='βᴱ/βᴱ';
+    desc='มียีน HbE ทั้งสองข้าง ซีดเล็กน้อย';
+    R.push({t:'hi', txt:`HbE = ${hbe}% → สูงมาก บ่งชี้ homozygous HbE`});
+    return {diag,geno,desc,R,D,needPcr};
+  }
+  if (hbe!==null && hbe>0 && hbf!==null && hbf>10) {
+    diag='HbE/β-thalassemia'; geno='βᴱ/β⁰';
+    desc='รุนแรงปานกลาง–มาก อาจต้องรับเลือด';
+    R.push({t:'hi', txt:`HbE = ${hbe}% + HbF = ${hbf}% → บ่งชี้ HbE/β-thal`});
+    return {diag,geno,desc,R,D,needPcr};
+  }
+  if (hbe!==null && hbe>=20 && hbe<=40 && (hba===null||hba>=55)) {
+    diag='HbE Trait'; geno='β/βᴱ';
+    desc='พาหะ HbE ไม่มีอาการ แต่ถ่ายทอดให้ลูกได้ พบบ่อยในอีสาน';
+    R.push({t:'hi', txt:`HbE = ${hbe}% → อยู่ในช่วง 20–40% บ่งชี้ HbE trait`});
+    if(hba!==null) D.push({t:'ok', txt:`HbA = ${hba}% → ลดลงสอดคล้องกับ HbE trait`});
+    if(hba2!==null) D.push({t:'ok', txt:`HbA₂ = ${hba2}% → ปกติ`});
+    if(mcvLo) D.push({t:'lo', txt:`MCV = ${mcv} fL → ต่ำเล็กน้อย สอดคล้อง`});
+    return {diag,geno,desc,R,D,needPcr};
+  }
+  if (hba2!==null && hba2>CUT.hba2) {
+    diag='β-thal Trait'; geno='β/β⁰';
+    desc='พาหะ β-thalassemia ไม่มีอาการ แต่ถ่ายทอดให้ลูกได้';
+    R.push({t:'hi', txt:`HbA₂ = ${hba2}% → สูงกว่า ${CUT.hba2}% ✓ บ่งชี้ β-thal trait`});
+    if(mcvLo) R.push({t:'lo', txt:`MCV = ${mcv} fL → ต่ำกว่า ${CUT.mcv} fL ✓ สอดคล้อง`});
+    if(mchLo) D.push({t:'lo', txt:`MCH = ${mch} pg → ต่ำกว่า ${CUT.mch} pg สอดคล้อง`});
+    if(hbf!==null) D.push({t:'ok', txt:`HbF = ${hbf}% → ${hbf<3?'ปกติ':'สูงเล็กน้อย สอดคล้อง'}`});
+    return {diag,geno,desc,R,D,needPcr};
+  }
+  if (hba2!==null && hba2>=CUT.hba2b && hba2<=CUT.hba2) {
+    diag='Borderline HbA₂'; geno='?';
+    desc='HbA₂ อยู่ในเขตเส้นบาง อาจเป็น β-thal trait หรือปกติ ต้องตรวจเพิ่ม';
+    R.push({t:'warn', txt:`HbA₂ = ${hba2}% → อยู่ในช่วง ${CUT.hba2b}–${CUT.hba2}% (เขตเส้นบาง)`});
+    if(mcvLo) R.push({t:'warn', txt:`MCV = ${mcv} fL → ต่ำ เพิ่มความน่าสงสัย`});
+    needPcr = 'ตรวจ iron study ก่อน — ถ้า iron ปกติ ส่ง PCR β-globin gene';
+    return {diag,geno,desc,R,D,needPcr};
+  }
+  if ((mcvLo||mchLo) && (hba2===null||hba2<=CUT.hba2) && (hbe===null||hbe<5) && hasTyping) {
+    diag='สงสัย α-thal Trait'; geno='αα/α− หรือ αα/−−';
+    desc='Hb typing ปกติ แต่ MCV/MCH ต่ำ — α-thal trait ตรวจไม่พบจาก Hb typing ต้องส่ง PCR ยืนยัน';
+    if(mcvLo) R.push({t:'lo', txt:`MCV = ${mcv} fL → ต่ำกว่า ${CUT.mcv} fL`});
+    if(mchLo) R.push({t:'lo', txt:`MCH = ${mch} pg → ต่ำกว่า ${CUT.mch} pg`});
+    if(hba2!==null) D.push({t:'ok', txt:`HbA₂ = ${hba2}% → ปกติ ไม่บ่งชี้ β-thal`});
+    D.push({t:'warn', txt:'α-thal trait ให้ผล Hb typing ปกติได้เสมอ ต้องยืนยันด้วย PCR'});
+    needPcr = 'ส่ง PCR α-globin gene เพื่อยืนยัน genotype';
+    return {diag,geno,desc,R,D,needPcr};
+  }
+  if (hba!==null && hba>=95 && hba2!==null && hba2<=CUT.hba2 && (hbe===null||hbe<1) && (hbh===null||hbh<1) && (barts===null||barts<1)) {
+    diag='ปกติ'; geno='AA';
+    desc='ค่า Hb typing ทุกตัวอยู่ในช่วงปกติ ไม่พบความผิดปกติของ hemoglobin';
+    R.push({t:'ok', txt:`HbA = ${hba}% → ปกติ (~97%) ✓`});
+    if(hba2!==null) R.push({t:'ok', txt:`HbA₂ = ${hba2}% → ปกติ (≤${CUT.hba2}%) ✓`});
+    if(hbf!==null)  D.push({t:'ok', txt:`HbF = ${hbf}% → ปกติ (<1%) ✓`});
+    return {diag,geno,desc,R,D,needPcr};
+  }
+  return {diag,geno,desc,R,D,needPcr};
+}
+
+// ══════════════════════════════════════════════
+// RENDER RESULT
+// ══════════════════════════════════════════════
+let mData=null, dData=null;
+
+function renderResult(p, data) {
+  if (!data) return;
+  document.getElementById(p+'_diag').textContent  = data.diag;
+  document.getElementById(p+'_geno').textContent  = 'Genotype: '+data.geno;
+  document.getElementById(p+'_desc').textContent  = data.desc;
+
+  const rrows = document.getElementById(p+'_whyrows');
+  rrows.innerHTML = '';
+  const imap = {ok:'✓',hi:'↑',lo:'↓',warn:'!'};
+  const cmap = {ok:'d-ok',hi:'d-hi',lo:'d-lo',warn:'d-warn'};
+  data.R.forEach(r => {
+    rrows.innerHTML += `<div class="wr"><div class="wdot ${cmap[r.t]||'d-ok'}">${imap[r.t]||'•'}</div><span>${r.txt}</span></div>`;
+  });
+
+  const wlist = document.getElementById(p+'_whylist');
+  wlist.innerHTML = '';
+  data.D.forEach(r => {
+    wlist.innerHTML += `<li class="wr"><div class="wdot ${cmap[r.t]||'d-ok'}">${imap[r.t]||'•'}</div><span>${r.txt}</span></li>`;
+  });
+  document.getElementById(p+'_whybtn').style.display = data.D.length ? '' : 'none';
+
+  const pcrBox = document.getElementById(p+'_pcrbox');
+  pcrBox.innerHTML = data.needPcr
+    ? `<div class="pcr-box"><div style="font-size:18px">🧪</div><div><h4>ต้องการตรวจเพิ่มเติม</h4><p>${data.needPcr}</p></div></div>`
+    : '';
+
+  document.getElementById(p+'_result').classList.add('show');
+
+  if (p==='m') mData=data; else dData=data;
+  if (mData && dData) renderCouple();
+}
+
+// ══════════════════════════════════════════════
+// COUPLE
+// ══════════════════════════════════════════════
+const RISKS = {
+  'β/β⁰|β/βᴱ': {
+    lv:'r', title:'⚠️ คู่เสี่ยงสูง!',
+    desc:'มีโอกาส 25% ที่ลูกจะเป็น β-thal/HbE disease อาจต้องรับเลือดตลอดชีวิต',
+    cells:[{p:'25%',g:'βᴱ/β⁰',n:'β-thal/HbE\nรุนแรง',c:'cr'},{p:'25%',g:'β/βᴱ',n:'HbE Trait\nพาหะ',c:'cy'},{p:'25%',g:'β/β⁰',n:'β-thal Trait\nพาหะ',c:'cy'},{p:'25%',g:'β/β',n:'ปกติ',c:'cg'}],
+    acts:['pcr_b','refer'], sc:true,
+    learn:'β-thal/HbE เกิดจากลูกรับยีน β-thal จากแม่และ HbE จากพ่อ (หรือกลับกัน) บางรายต้องรับเลือดตลอดชีวิต ต้องยืนยัน mutation ด้วย PCR และพบแพทย์ผู้เชี่ยวชาญ'
+  },
+  'β/βᴱ|β/β⁰': {
+    lv:'r', title:'⚠️ คู่เสี่ยงสูง!',
+    desc:'มีโอกาส 25% ที่ลูกจะเป็น β-thal/HbE disease อาจต้องรับเลือดตลอดชีวิต',
+    cells:[{p:'25%',g:'βᴱ/β⁰',n:'β-thal/HbE\nรุนแรง',c:'cr'},{p:'25%',g:'β/βᴱ',n:'HbE Trait\nพาหะ',c:'cy'},{p:'25%',g:'β/β⁰',n:'β-thal Trait\nพาหะ',c:'cy'},{p:'25%',g:'β/β',n:'ปกติ',c:'cg'}],
+    acts:['pcr_b','refer'], sc:true,
+    learn:'β-thal/HbE เกิดจากลูกรับยีน β-thal และ HbE ความรุนแรงขึ้นกับชนิด mutation บางรายมีอาการปานกลาง บางรายรุนแรง'
+  },
+  'β/β⁰|β/β⁰': {
+    lv:'r', title:'⚠️ คู่เสี่ยงสูง!',
+    desc:'มีโอกาส 25% ที่ลูกจะเป็น β-thal Major ต้องรับเลือดตลอดชีวิต',
+    cells:[{p:'25%',g:'β⁰/β⁰',n:'β-thal Major\nรุนแรงมาก',c:'cr'},{p:'50%',g:'β/β⁰',n:'β-thal Trait\nพาหะ',c:'cy'},{p:'25%',g:'β/β',n:'ปกติ',c:'cg'}],
+    acts:['pcr_b','refer'], sc:true,
+    learn:'ทั้งคู่เป็น β-thal trait ลูก 25% เป็น β-thal major ซึ่งต้องรับเลือดตลอดชีวิต ต้องยืนยัน mutation ก่อน'
+  },
+  'β/βᴱ|β/βᴱ': {
+    lv:'y', title:'⚠️ มีความเสี่ยง',
+    desc:'มีโอกาส 25% ที่ลูกจะเป็น HbE Disease ซึ่งมักมีอาการเพียงเล็กน้อย',
+    cells:[{p:'25%',g:'βᴱ/βᴱ',n:'HbE Disease\nเล็กน้อย',c:'cy'},{p:'50%',g:'β/βᴱ',n:'HbE Trait\nพาหะ',c:'cb'},{p:'25%',g:'AA',n:'ปกติ',c:'cg'}],
+    acts:['counsel'], sc:false,
+    learn:'HbE Disease (homozygous) มักมีอาการซีดเล็กน้อย ไม่ต้องรับเลือด แต่ควรแนะนำให้ทราบและติดตาม'
+  },
+  'AA|AA': {
+    lv:'g', title:'✅ ไม่พบความเสี่ยง',
+    desc:'ทั้งคู่ผล Hb typing ปกติ ลูกไม่มีความเสี่ยงโรค thalassemia รุนแรง',
+    cells:[{p:'100%',g:'AA',n:'ปกติ',c:'cg'}],
+    acts:['follow'], sc:false,
+    learn:'ทั้งคู่ไม่พบความผิดปกติของ hemoglobin ติดตาม ANC ปกติ'
+  },
+  'AA|β/β⁰': {
+    lv:'g', title:'✅ ความเสี่ยงต่ำ',
+    desc:'ลูกอาจเป็น β-thal trait แต่ไม่มีความเสี่ยงเป็นโรครุนแรง',
+    cells:[{p:'50%',g:'β/β⁰',n:'β-thal Trait\nพาหะ',c:'cy'},{p:'50%',g:'AA',n:'ปกติ',c:'cg'}],
+    acts:['follow'], sc:false,
+    learn:'ถ้าแม่ปกติ ลูกไม่มีโอกาสเป็นโรครุนแรง แม้พ่อเป็น β-thal trait'
+  },
+  'β/β⁰|AA': {
+    lv:'g', title:'✅ ความเสี่ยงต่ำ',
+    desc:'ลูกอาจเป็น β-thal trait แต่ไม่มีความเสี่ยงเป็นโรครุนแรง',
+    cells:[{p:'50%',g:'β/β⁰',n:'β-thal Trait\nพาหะ',c:'cy'},{p:'50%',g:'AA',n:'ปกติ',c:'cg'}],
+    acts:['follow'], sc:false,
+    learn:'ถ้าพ่อปกติ ลูกไม่มีโอกาสเป็นโรครุนแรง แม้แม่เป็น β-thal trait'
+  },
+  'AA|β/βᴱ': {
+    lv:'g', title:'✅ ความเสี่ยงต่ำ',
+    desc:'ลูกอาจเป็น HbE trait แต่ไม่มีความเสี่ยงเป็นโรครุนแรง',
+    cells:[{p:'50%',g:'β/βᴱ',n:'HbE Trait\nพาหะ',c:'cb'},{p:'50%',g:'AA',n:'ปกติ',c:'cg'}],
+    acts:['follow'], sc:false,
+    learn:'ถ้าแม่ปกติ ลูกไม่มีโอกาสเป็น HbE/β-thal หรือโรครุนแรงอื่น'
+  },
+  'β/βᴱ|AA': {
+    lv:'g', title:'✅ ความเสี่ยงต่ำ',
+    desc:'ลูกอาจเป็น HbE trait แต่ไม่มีความเสี่ยงเป็นโรครุนแรง',
+    cells:[{p:'50%',g:'β/βᴱ',n:'HbE Trait\nพาหะ',c:'cb'},{p:'50%',g:'AA',n:'ปกติ',c:'cg'}],
+    acts:['follow'], sc:false,
+    learn:'ถ้าพ่อปกติ ลูกไม่มีโอกาสเป็นโรครุนแรง แม้แม่เป็น HbE trait'
+  },
+};
+
+const ACTDEFS = {
+  pcr_b:      {cls:'a-pcr', ic:'🧪', h:'ส่ง PCR β-globin gene', s:'ทั้งแม่และพ่อ เพื่อยืนยัน β-thal mutation'},
+  pcr_b_mom:  {cls:'a-pcr', ic:'🧪', h:'แม่ ส่ง PCR for Beta', s:'ส่ง PCR β-globin gene สำหรับแม่ เพื่อยืนยัน β-thal mutation'},
+  pcr_b_dad:  {cls:'a-pcr', ic:'🧪', h:'พ่อ ส่ง PCR for Beta', s:'ส่ง PCR β-globin gene สำหรับพ่อ เพื่อยืนยัน β-thal mutation'},
+  pcr_a:      {cls:'a-pcr', ic:'🧪', h:'ส่ง PCR α-globin gene', s:'เพื่อยืนยัน α-thal trait'},
+  pcr_a_mom:  {cls:'a-pcr', ic:'🧪', h:'แม่ ส่ง PCR for Alpha', s:'ส่ง PCR α-globin gene สำหรับแม่ เพื่อยืนยัน α-thal genotype'},
+  pcr_a_dad:  {cls:'a-pcr', ic:'🧪', h:'พ่อ ส่ง PCR for Alpha', s:'ส่ง PCR α-globin gene สำหรับพ่อ เพื่อยืนยัน α-thal genotype'},
+  refer:  {cls:'a-ref', ic:'🏥', h:'ส่งตัวพบแพทย์ผู้เชี่ยวชาญ', s:'โรงพยาบาลแม่ข่าย เพื่อ genetic counseling'},
+  counsel:{cls:'a-ref', ic:'💬', h:'แนะนำให้ข้อมูล', s:'อธิบาย HbE disease ให้คู่สมรสเข้าใจ'},
+  follow: {cls:'a-ok',  ic:'📋', h:'ติดตาม ANC ปกติ', s:'ไม่ต้องการการตรวจเพิ่มเติม'},
+};
+
+function renderCouple() {
+  const mg = mData.geno, dg = dData.geno;
+  document.getElementById('c_mgeno').textContent = mg;
+  document.getElementById('c_dgeno').textContent = dg;
+
+  // ── helper: does this geno suggest alpha-thal?
+  function isAlphaGeno(g) { return g==='?' && (mData.needPcr||'').includes('α') || (g||'').includes('α') || (g||'').includes('−'); }
+  function isBetaGeno(g)  { return (g||'').includes('β') || (g||'').includes('E') || (g||'').includes('βᴱ'); }
+
+  const key = mg+'|'+dg;
+  let risk = RISKS[key];
+
+  if (!risk) {
+    // Determine PCR type per person for unknown combos
+    const mNeedAlpha = mData.needPcr && mData.needPcr.includes('α');
+    const dNeedAlpha = dData.needPcr && dData.needPcr.includes('α');
+    const mNeedBeta  = mg==='?' && !mNeedAlpha || isBetaGeno(mg);
+    const dNeedBeta  = dg==='?' && !dNeedAlpha || isBetaGeno(dg);
+    let acts = [];
+    if (mNeedAlpha && dNeedAlpha) { acts = ['pcr_a','refer']; }
+    else if (mNeedAlpha && dNeedBeta) { acts = ['pcr_a_mom','pcr_b_dad','refer']; }
+    else if (mNeedBeta && dNeedAlpha) { acts = ['pcr_b_mom','pcr_a_dad','refer']; }
+    else if (mNeedAlpha) { acts = ['pcr_a_mom','refer']; }
+    else if (dNeedAlpha) { acts = ['pcr_a_dad','refer']; }
+    else { acts = ['pcr_b','refer']; }
+    risk = {
+      lv:'y', title:'🔍 ต้องตรวจเพิ่มเติม',
+      desc:`แม่: ${mg} / พ่อ: ${dg} — ยังสรุปไม่ได้ ต้องส่ง PCR ก่อน`,
+      cells:[{p:'?',g:mg,n:'แม่',c:'cy'},{p:'?',g:dg,n:'พ่อ',c:'cb'}],
+      acts, sc:true,
+      learn:'เมื่อได้ผล PCR แล้วจะสามารถระบุ genotype และประเมินความเสี่ยงลูกได้ครบถ้วน'
+    };
+  } else {
+    // For known combos, check if mom/dad need different PCR types
+    if (risk.acts && risk.acts.includes('pcr_b')) {
+      const mIsAlpha = mData.needPcr && mData.needPcr.includes('α');
+      const dIsAlpha = dData.needPcr && dData.needPcr.includes('α');
+      if (mIsAlpha && !dIsAlpha) {
+        risk = Object.assign({}, risk, { acts: risk.acts.map(a => a==='pcr_b' ? 'pcr_a_mom' : a).concat(risk.acts.includes('pcr_b') && !risk.acts.includes('pcr_b_dad') ? ['pcr_b_dad'] : []) });
+      } else if (!mIsAlpha && dIsAlpha) {
+        risk = Object.assign({}, risk, { acts: risk.acts.map(a => a==='pcr_b' ? 'pcr_b_mom' : a).concat(['pcr_a_dad']) });
+      }
+    }
+  }
+
+  // Determine if PCR is needed (for fix 7)
+  const needsPcr = risk.sc || risk.acts.some(a => a.startsWith('pcr'));
+
+  currentRiskData = risk;
+
+  const ab = document.getElementById('c_alert');
+  ab.className = 'abox ' + (risk.lv==='r'?'ab-r':risk.lv==='g'?'ab-g':'ab-y');
+  document.getElementById('c_alerttitle').textContent = risk.title;
+  document.getElementById('c_alertdesc').textContent  = risk.desc;
+
+  const grid = document.getElementById('c_riskgrid');
+  grid.innerHTML = '';
+  risk.cells.forEach(c => {
+    grid.innerHTML += `<div class="rcell ${c.c}">
+      <div class="rpct">${c.p}</div>
+      <div class="rgeno">${c.g}</div>
+      <div class="rname">${c.n.replace('\n','<br>')}</div>
+    </div>`;
+  });
+
+  document.getElementById('c_learn').textContent = risk.learn;
+
+  const astack = document.getElementById('c_actions');
+  astack.innerHTML = '';
+  risk.acts.forEach(a => {
+    const d = ACTDEFS[a]; if(!d) return;
+    astack.innerHTML += `<button class="abtn ${d.cls}">
+      <div class="a-ic">${d.ic}</div>
+      <div class="a-txt"><h4>${d.h}</h4><p>${d.s}</p></div>
+      <span class="a-arr">›</span>
+    </button>`;
+  });
+
+  const sw = document.getElementById('c_scenWrap');
+  if (risk.sc) {
+    sw.style.display='block';
+    document.getElementById('c_scenarios').innerHTML = `
+      <div class="scitem sc-p"><h4>❗ PCR Positive — พบ mutation</h4><p>ยืนยันว่าคู่นี้เสี่ยงจริง → <strong>ส่งพบแพทย์ผู้เชี่ยวชาญทันที</strong> เพื่อวางแผน prenatal diagnosis</p></div>
+      <div class="scitem sc-n"><h4>✅ PCR Negative — ไม่พบ mutation</h4><p>ความเสี่ยงลดลงมาก → ติดตาม ANC ปกติ และแจ้งแพทย์ทราบผล</p></div>`;
+  } else { sw.style.display='none'; }
+
+  // ── Fix 7: PCR result prompt ──
+  const pcrPrompt = document.getElementById('c_pcrPrompt');
+  if (false && needsPcr) { // disabled: replaced by pcrDetailSec below
+    pcrPrompt.style.display = 'block';
+    pcrPrompt.innerHTML = `
+      <div style="background:#fff8f0;border:2px solid #e59866;border-radius:14px;padding:14px 16px;margin-bottom:10px">
+        <div style="font-size:14px;font-weight:700;color:#784212;margin-bottom:10px">🔬 มีผล PCR แล้วหรือยัง?</div>
+        <div style="display:flex;gap:8px;margin-bottom:0" id="pcrYesNo">
+          <button id="pcrBtn_positive" onclick="showPcrResult('positive')"
+            style="flex:1;background:#fff0f0;border:2px solid #e74c3c;color:#c0392b;border-radius:10px;padding:10px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.2s">
+            🔴 Positive (พบ)
+          </button>
+          <button id="pcrBtn_negative" onclick="showPcrResult('negative')"
+            style="flex:1;background:#f0fdf4;border:2px solid #2ecc71;color:#1e8449;border-radius:10px;padding:10px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.2s">
+            🟢 Negative (ไม่พบ)
+          </button>
+          <button id="pcrBtn_pending" onclick="showPcrResult('pending')"
+            style="flex:1;background:#f8f9fa;border:2px solid #94a3b8;color:#4a5568;border-radius:10px;padding:10px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.2s">
+            ⏳ ยังไม่มี
+          </button>
+        </div>
+        <div id="pcrResultDetail" style="margin-top:10px;display:none"></div>
+      </div>`;
+    // Restore previous selection state if any
+    if (pcrButtonState) {
+      showPcrResult(pcrButtonState);
+    }
+  } else {
+    pcrPrompt.style.display = 'none';
+    pcrPrompt.innerHTML = '';
+  }
+
+  // reset save button
+  const btn = document.getElementById('btnSaveCase');
+  btn.disabled = false;
+  btn.innerHTML = '💾 บันทึกเคสนี้';
+  btn.style.background = 'linear-gradient(135deg,#1e8449 0%,#27ae60 100%)';
+
+  document.getElementById('coupleSection').classList.add('show');
+}
+
+// ── Fix 7: PCR result handler ──
+let pcrButtonState = null; // persist across scrolls
+function showPcrResult(result) {
+  pcrButtonState = result;
+  // Update button visual states
+  const btnIds = ['positive','negative','pending'];
+  btnIds.forEach(id => {
+    const btn = document.getElementById('pcrBtn_' + id);
+    if (!btn) return;
+    if (id === result) {
+      btn.style.opacity = '1';
+      btn.style.boxShadow = '0 0 0 3px currentColor';
+      btn.style.fontWeight = '800';
+    } else {
+      btn.style.opacity = '0.4';
+      btn.style.boxShadow = 'none';
+    }
+  });
+  const detail = document.getElementById('pcrResultDetail');
+  if (!detail) return;
+  detail.style.display = 'block';
+  if (result === 'positive') {
+    // Build risk disease list from currentRiskData.cells (cr = red, cy = yellow)
+    let riskLines = '';
+    if (currentRiskData && currentRiskData.cells) {
+      const riskCells = currentRiskData.cells.filter(c => c.c === 'cr' || c.c === 'cy');
+      if (riskCells.length > 0) {
+        const colorMap = { cr: '#c0392b', cy: '#7d6608' };
+        riskLines = '<div style="margin:8px 0 6px;display:flex;flex-direction:column;gap:5px">';
+        riskCells.forEach(cell => {
+          const clr = colorMap[cell.c] || '#c0392b';
+          const diseaseName = cell.n.replace('\n', ' — ');
+          const severity = cell.c === 'cr'
+            ? 'ความเสี่ยงสูง อาจต้องรับเลือดตลอดชีวิต'
+            : 'ความเสี่ยงปานกลาง ควรติดตามใกล้ชิด';
+          riskLines += `<div style="background:rgba(0,0,0,0.04);border-radius:7px;padding:7px 10px;border-left:3px solid ${clr}">
+            <span style="font-weight:700;color:${clr}">${cell.p} — ${diseaseName}</span><br>
+            <span style="font-size:12px;color:#5d1a14">${severity}</span>
+          </div>`;
+        });
+        riskLines += '</div>';
+      }
+    }
+    detail.innerHTML = `
+      <div style="background:#fdedec;border:1.5px solid #e74c3c;border-radius:10px;padding:12px 14px">
+        <div style="font-size:14px;font-weight:800;color:#c0392b;margin-bottom:4px">❗ PCR Positive — พบ mutation</div>
+        <p style="font-size:13px;color:#5d1a14;line-height:1.6;margin-bottom:2px">ยืนยันว่าคู่นี้มีความเสี่ยงสูงจริง โดยลูกมีโอกาสได้รับโรคดังนี้:</p>
+        ${riskLines}
+        <p style="font-size:13px;color:#5d1a14;line-height:1.6;margin-top:6px">
+        → <strong>ส่งพบแพทย์ผู้เชี่ยวชาญทันที</strong> เพื่อวางแผน prenatal diagnosis<br>
+        → แจ้งคู่สมรสทราบผลและอธิบายทางเลือก<br>
+        → บันทึกเคสและประสานงานโรงพยาบาลแม่ข่าย</p>
+      </div>`;
+  } else if (result === 'negative') {
+    detail.innerHTML = `
+      <div style="background:#eafaf1;border:1.5px solid #2ecc71;border-radius:10px;padding:12px 14px">
+        <div style="font-size:14px;font-weight:800;color:#1e8449;margin-bottom:6px">✅ PCR Negative — ไม่พบ mutation</div>
+        <p style="font-size:13px;color:#145a32;line-height:1.6">ความเสี่ยงลดลงมากอย่างมีนัยสำคัญ<br>
+        → ติดตาม ANC ปกติตามนัด<br>
+        → แจ้งแพทย์ผู้ดูแลทราบผล PCR<br>
+        → ไม่จำเป็นต้องส่งต่อเพิ่มเติม</p>
+      </div>`;
+  } else {
+    detail.innerHTML = `
+      <div style="background:#f0f3f7;border:1.5px solid #94a3b8;border-radius:10px;padding:12px 14px">
+        <div style="font-size:14px;font-weight:800;color:#4a5568;margin-bottom:6px">⏳ รอผล PCR</div>
+        <p style="font-size:13px;color:#374151;line-height:1.6">ระหว่างรอผล PCR:<br>
+        → ติดตามการนัดหมายส่ง specimen<br>
+        → แนะนำคู่สมรสเรื่องความสำคัญของผล PCR<br>
+        → เมื่อได้ผลแล้วกลับมาอัปเดตในระบบ</p>
+      </div>`;
+  }
+}
+
+// ── DROPDOWN ──
+const DD_MAP = {
+  'AA':      {diag:'ปกติ',          geno:'AA',          desc:'Hb typing ปกติทุกค่า ไม่พบความผิดปกติ', R:[{t:'ok',txt:'เลือก: ปกติ (AA)'}], D:[], needPcr:null},
+  'β/β⁰':   {diag:'β-thal Trait',  geno:'β/β⁰',        desc:'พาหะ β-thalassemia ไม่มีอาการ แต่ถ่ายทอดให้ลูกได้', R:[{t:'hi',txt:'เลือก: β-thal Trait'}], D:[], needPcr:null},
+  'A/E':     {diag:'HbE Trait',     geno:'β/βᴱ',        desc:'พาหะ HbE ไม่มีอาการ พบบ่อยในอีสาน', R:[{t:'hi',txt:'เลือก: HbE Trait'}], D:[], needPcr:null},
+  '?_alpha': {diag:'สงสัย α-thal Trait', geno:'αα/α− หรือ αα/−−', desc:'MCV/MCH ต่ำ แต่ Hb typing ปกติ ต้องส่ง PCR ยืนยัน', R:[{t:'warn',txt:'เลือก: สงสัย α-thal Trait'}], D:[], needPcr:'ส่ง PCR α-globin gene เพื่อยืนยัน genotype'},
+  'E/E':     {diag:'HbE Disease',   geno:'βᴱ/βᴱ',       desc:'Homozygous HbE ซีดเล็กน้อย', R:[{t:'hi',txt:'เลือก: HbE Disease'}], D:[], needPcr:null},
+  'β⁰/β⁰':  {diag:'β-thal Major',  geno:'β⁰/β⁰',       desc:'ไม่มี HbA ต้องรับเลือดตลอดชีวิต', R:[{t:'hi',txt:'เลือก: β-thal Major'}], D:[], needPcr:null},
+  '−−/−α':  {diag:'HbH Disease',   geno:'−−/α−',        desc:'α-thal ขาด 3 gene ซีดเรื้อรัง', R:[{t:'hi',txt:'เลือก: HbH Disease'}], D:[], needPcr:null},
+  'βE/β⁰':  {diag:'HbE/β-thalassemia', geno:'βᴱ/β⁰',   desc:'รุนแรงปานกลาง–มาก อาจต้องรับเลือด', R:[{t:'hi',txt:'เลือก: HbE/β-thalassemia'}], D:[], needPcr:null},
+  'other':   {diag:'ไม่ทราบ / อื่นๆ', geno:'?',         desc:'กรุณาปรึกษาแพทย์เพิ่มเติม', R:[{t:'warn',txt:'เลือก: อื่นๆ / ไม่ทราบ'}], D:[], needPcr:'ควรปรึกษาแพทย์หรือส่ง PCR เพิ่มเติม'},
+};
+
+function onDd(p) {
+  const val = document.getElementById(p+'_ddsel').value;
+  if (!val) { hideResult(p); return; }
+  const data = DD_MAP[val];
+  if (data) renderResult(p, data);
+}
+
+// ── TOGGLE WHY ──
+function toggleWhy(p) {
+  document.getElementById(p+'_whydetail').classList.toggle('open');
+  document.getElementById(p+'_whybtn').classList.toggle('open');
+}
+
+// ── LISTENERS ──
+const mFields = ['m_hb','m_mcv','m_mch','m_hba','m_hba2','m_hbf','m_hbe','m_hbh','m_barts'];
+const dFields = ['d_hb','d_mcv','d_mch','d_hba','d_hba2','d_hbf','d_hbe','d_hbh','d_barts'];
+let mt, dt;
+
+mFields.forEach(id => {
+  document.getElementById(id)?.addEventListener('input', e => {
+    if(e.target.value) e.target.classList.add('ok'); else e.target.classList.remove('ok');
+    clearTimeout(mt);
+    mt = setTimeout(()=>{ const d=interpret('m'); if(d) renderResult('m',d); }, 500);
+  });
+});
+
+dFields.forEach(id => {
+  document.getElementById(id)?.addEventListener('input', e => {
+    if(e.target.value) e.target.classList.add('ok'); else e.target.classList.remove('ok');
+    clearTimeout(dt);
+    dt = setTimeout(()=>{ const d=interpret('d'); if(d) renderResult('d',d); }, 500);
+  });
+});
+
+function reInterpretAll() {
+  const md=interpret('m'); if(md) renderResult('m',md);
+  const dd=interpret('d'); if(dd) renderResult('d',dd);
+}
+
+// ══════════════════════════════════════════════
+// KNOWLEDGE OVERLAY
+// ══════════════════════════════════════════════
+const KNOW_HTML = `
+<div class="know-section" id="know_s1">
+<div class="know-h1">ส่วนที่ 1 : ฮีโมโกลบิน คืออะไร?</div>
+<p class="know-p">ฮีโมโกลบิน (Hemoglobin) คือโปรตีนในเม็ดเลือดแดง ทำหน้าที่รับออกซิเจนที่ปอด แล้วส่งไปเลี้ยงทั่วร่างกาย</p>
+<div class="know-box know-box-blue"><strong>เปรียบง่ายๆ:</strong> เม็ดเลือดแดง = รถบรรทุก &nbsp;|&nbsp; ฮีโมโกลบิน = ตะกร้าบนรถ &nbsp;|&nbsp; ออกซิเจน = สินค้า</div>
+<div class="know-h2">โครงสร้างของฮีโมโกลบิน</div>
+<table class="know-table">
+<tr><th>ชนิด Hb</th><th>สูตร (สาย Globin)</th><th>ค่าปกติผู้ใหญ่</th><th>พบเมื่อไหร่</th></tr>
+<tr><td><strong>HbA</strong></td><td>α₂β₂</td><td>95–97%</td><td>ผู้ใหญ่ปกติ (หลัก)</td></tr>
+<tr><td><strong>HbA₂</strong></td><td>α₂δ₂</td><td>1.5–3.5%</td><td>ผู้ใหญ่ปกติ (น้อย)</td></tr>
+<tr><td><strong>HbF</strong></td><td>α₂γ₂</td><td>&lt;1–2%</td><td>ทารกในครรภ์ → ลดหลังคลอด</td></tr>
+<tr><td><strong>HbH</strong></td><td>β₄</td><td><span style="color:#c0392b">ไม่ควรมี</span></td><td>α ขาดมาก (3 ยีน)</td></tr>
+<tr><td><strong>Hb Bart's</strong></td><td>γ₄</td><td><span style="color:#c0392b">ไม่ควรมี</span></td><td>α ขาดมาก (4 ยีน)</td></tr>
+<tr><td><strong>HbE</strong></td><td>α₂βE₂</td><td><span style="color:#c0392b">ไม่ควรมี</span></td><td>ยีน β กลายพันธุ์</td></tr>
+</table>
+</div>
+<div class="know-section" id="know_s2">
+<div class="know-h1">ส่วนที่ 2 : ยีนที่เกี่ยวข้อง และ การอ่านสัญลักษณ์</div>
+<div class="know-h2">2.1 ยีน Alpha (α) — โครโมโซมคู่ที่ 16</div>
+<p class="know-p">คนปกติมียีน α ทั้งหมด 4 ยีน (ข้างละ 2 ยีน เขียนว่า αα/αα)</p>
+<table class="know-table">
+<tr><th>สัญลักษณ์</th><th>ความหมาย</th><th>ชื่อเรียก</th><th>ผลต่อร่างกาย</th></tr>
+<tr><td><span class="know-chip">αα/αα</span></td><td>ยีน α ครบ 4 ยีน</td><td>ปกติ</td><td>ปกติ ไม่มีอาการ</td></tr>
+<tr><td><span class="know-chip">–α</span></td><td>ยีน α หายไป 1 ยีน</td><td>α thal 2</td><td>เม็ดเลือดเล็กเล็กน้อย มักไม่มีอาการ</td></tr>
+<tr><td><span class="know-chip">– –</span></td><td>ยีน α หายไป 2 ยีน (ข้างเดียว)</td><td>α thal 1</td><td>เม็ดเลือดเล็ก MCV/MCH ต่ำ ยีนอันตรายถ้าคู่กัน</td></tr>
+<tr><td><span class="know-chip">αCS</span></td><td>ยีน α กลายพันธุ์แบบ Constant Spring</td><td>Hb CS</td><td>เหมือนขาด α 1 ยีน ทำให้ Hb CS ปรากฏใน HPLC</td></tr>
+</table>
+<div class="know-h2">2.2 ยีน Beta (β) — โครโมโซมคู่ที่ 11</div>
+<p class="know-p">คนปกติมียีน β 2 ยีน (ข้างละ 1 ยีน เขียนว่า β/β)</p>
+<table class="know-table">
+<tr><th>สัญลักษณ์</th><th>ความหมาย</th><th>ผลต่อร่างกาย</th></tr>
+<tr><td><span class="know-chip">β/β</span></td><td>ยีน β ปกติทั้งคู่</td><td>ปกติ สร้าง Beta Globin ได้ครบ</td></tr>
+<tr><td><span class="know-chip">β++</span></td><td>สร้าง β ลดลงเล็กน้อย</td><td>อาการน้อย — เม็ดเลือดเล็กเล็กน้อย</td></tr>
+<tr><td><span class="know-chip">β+</span></td><td>สร้าง β ลดลงพอสมควร</td><td>อาการปานกลาง — เม็ดเลือดเล็ก โลหิตจางปานกลาง</td></tr>
+<tr><td><span class="know-chip">β⁰</span></td><td>สร้าง β ไม่ได้เลย</td><td>รุนแรง — ถ้าทั้ง 2 ข้าง จะมีอาการหนัก ต้องรับเลือด</td></tr>
+<tr><td><span class="know-chip">βE</span></td><td>กลายพันธุ์แบบ Hb E</td><td>สร้าง β ลดลง ถ้าจับกับ β⁰ จะอาการหนัก (พบบ่อยในไทย)</td></tr>
+</table>
+</div>
+<div class="know-section" id="know_s3">
+<div class="know-h1">ส่วนที่ 3 : พาหะ vs เป็นโรค</div>
+<div class="know-box know-box-yellow"><strong>หลักการง่ายๆ:</strong> ดูว่าได้ยีนผิดปกติมาจากพ่อแม่กี่ข้าง</div>
+<table class="know-table">
+<tr><th></th><th>พาหะ (Trait)</th><th>เป็นโรค (Disease)</th></tr>
+<tr><td><strong>ยีนที่ได้รับ</strong></td><td>ปกติ 1 ข้าง + ผิดปกติ 1 ข้าง</td><td><strong>ผิดปกติ ทั้ง 2 ข้าง</strong></td></tr>
+<tr><td><strong>ตัวอย่าง α</strong></td><td>–α/αα</td><td>––/–α (HbH disease)</td></tr>
+<tr><td><strong>ตัวอย่าง β</strong></td><td>β/β⁰ หรือ β/βE</td><td>β⁰/β⁰ หรือ β⁰/βE หรือ βE/βE</td></tr>
+<tr><td><strong>อาการ</strong></td><td>มักไม่มีอาการ</td><td>โลหิตจาง ตั้งแต่เล็กน้อยถึงรุนแรง</td></tr>
+</table>
+</div>
+<div class="know-section" id="know_s4">
+<div class="know-h1">ส่วนที่ 4 : ตารางแปลผล Hb Typing (HPLC)</div>
+<div class="know-h2">กลุ่มที่ 1 : ผล A2A</div>
+<table class="know-table">
+<tr><th>HbA₂</th><th>MCV/MCH</th><th>วินิจฉัย</th></tr>
+<tr><td>≤3.5%</td><td>ปกติ</td><td style="color:#1e8449;font-weight:700">ปกติ (αα/αα)</td></tr>
+<tr><td>≤3.5%</td><td>ต่ำ &lt;80/&lt;27</td><td style="color:#9a7d0a;font-weight:700">อาจเป็นพาหะ α thal — ต้องส่ง PCR</td></tr>
+<tr><td>&gt;3.5%</td><td>ต่ำ</td><td style="color:#c0392b;font-weight:700">พาหะ β thalassemia</td></tr>
+</table>
+<div class="know-h2">กลุ่มที่ 2 : ผล EA</div>
+<table class="know-table">
+<tr><th>HbE</th><th>วินิจฉัย</th></tr>
+<tr><td>≥25%</td><td><strong>พาหะ HbE</strong> (β/βE)</td></tr>
+<tr><td>&lt;25%</td><td><strong>พาหะ HbE + α thal 1</strong> — ต้องส่ง PCR</td></tr>
+</table>
+<div class="know-h2">กลุ่มที่ 3 : ผล EE/EF</div>
+<table class="know-table">
+<tr><th>ผล</th><th>ความรุนแรง</th><th>วินิจฉัย</th></tr>
+<tr><td>EE, HbE ≥80%</td><td>เล็กน้อย</td><td>Homozygous HbE (βE/βE)</td></tr>
+<tr><td>EF, HbE 40–80%, HbF 20–60%</td><td style="color:#c0392b;font-weight:700">รุนแรง</td><td>β⁰/βE thalassemia — ต้องรับเลือด</td></tr>
+</table>
+<div class="know-h2">กลุ่มที่ 4 : มี HbH / Hb Bart's</div>
+<table class="know-table">
+<tr><th>ผล</th><th>ความรุนแรง</th><th>วินิจฉัย</th></tr>
+<tr><td>A2A H (HbH 5–30%)</td><td>ปานกลาง</td><td>HbH disease (––/–α) — ขาด α 3 ยีน</td></tr>
+<tr><td>CS A2A</td><td>พาหะ</td><td>พาหะ HbCS (αCSα/αα)</td></tr>
+<tr><td>Hb Bart's เกือบ 100%</td><td style="color:#c0392b;font-weight:700">อันตรายมาก</td><td>Hb Bart's hydrops fetalis (––/––)</td></tr>
+</table>
+<div class="know-h2">กลุ่มที่ 5 : ผล A2F และ A2FA</div>
+<table class="know-table">
+<tr><th>ผล</th><th>ความรุนแรง</th><th>วินิจฉัย</th></tr>
+<tr><td>A2F — ไม่มี HbA</td><td style="color:#c0392b;font-weight:700">รุนแรง</td><td>Homozygous β⁰ thalassemia (β⁰/β⁰)</td></tr>
+<tr><td>A2FA — มี HbA เล็กน้อย</td><td>ปานกลาง</td><td>Homo β thal หรือ HPFH หรือ δβ⁰ thal</td></tr>
+</table>
+</div>
+<div class="know-section" id="know_s5">
+<div class="know-h1">ส่วนที่ 5 : โอกาสในลูก</div>
+<div class="know-h2">พ่อแม่ต่างเป็น β thal Trait (β/β⁰ × β/β⁰)</div>
+<table class="know-table">
+<tr><th></th><th>β (ปกติ)</th><th>β⁰</th></tr>
+<tr><td>β</td><td style="background:#f0fdf4">ปกติ 25%</td><td style="background:#fefdf0">พาหะ 25%</td></tr>
+<tr><td>β⁰</td><td style="background:#fefdf0">พาหะ 25%</td><td style="background:#fdedec"><strong>β⁰/β⁰ โรค 25%</strong></td></tr>
+</table>
+<div class="know-h2">พ่อ HbE Trait + แม่ β thal Trait (β/βE × β/β⁰)</div>
+<table class="know-table">
+<tr><th></th><th>β (ปกติ)</th><th>β⁰</th></tr>
+<tr><td>β</td><td style="background:#f0fdf4">ปกติ 25%</td><td style="background:#fefdf0">β/β⁰ พาหะ 25%</td></tr>
+<tr><td>βE</td><td style="background:#fefdf0">β/βE พาหะ 25%</td><td style="background:#fdedec"><strong>β⁰/βE โรครุนแรง 25%</strong></td></tr>
+</table>
+<div class="know-h2">พ่อแม่ต่างเป็น α thal 1 (––/αα × ––/αα)</div>
+<table class="know-table">
+<tr><th></th><th>αα</th><th>––</th></tr>
+<tr><td>αα</td><td style="background:#f0fdf4">ปกติ 25%</td><td style="background:#fefdf0">พาหะ 25%</td></tr>
+<tr><td>––</td><td style="background:#fefdf0">พาหะ 25%</td><td style="background:#fdedec"><strong>––/–– Hb Bart's 25%</strong><br><span style="font-size:11px">เสียชีวิตในครรภ์</span></td></tr>
+</table>
+</div>
+<div class="know-section" id="know_s6">
+<div class="know-h1">ส่วนที่ 6 : ทริกจำ สรุปในหน้าเดียว</div>
+<table class="know-table">
+<tr><th>สิ่งที่เห็นใน HPLC</th><th>แปลว่า...</th><th>ทำต่อ</th></tr>
+<tr><td><strong>HbA₂ &gt;3.5%</strong></td><td>พาหะ β thal เสมอ</td><td>ตรวจคู่สมรส ถ้าเป็นพาหะ HbE = เสี่ยงสูง</td></tr>
+<tr><td><strong>HbA₂ ≤3.5% + MCV/MCH ต่ำ</strong></td><td>อาจพาหะ α thal ฟันธงไม่ได้</td><td>ส่ง PCR DNA ยืนยัน α thal</td></tr>
+<tr><td><strong>มี HbE</strong></td><td>มียีน βE</td><td>ตรวจคู่สมรสเป็นพาหะ β thal ไหม</td></tr>
+<tr><td><strong>มี HbH / Hb Bart's</strong></td><td>α ขาดหนัก 3–4 ยีน</td><td>ส่งต่อผู้เชี่ยวชาญโลหิตวิทยา</td></tr>
+<tr><td><strong>HbF สูงในผู้ใหญ่</strong></td><td>ร่างกายกำลังชดเชย</td><td>ดู clinical ร่วม</td></tr>
+<tr><td><strong>HbA = 0%</strong></td><td>ธาลัสซีเมียรุนแรงมาก</td><td>ส่งต่อด่วน ต้องรับเลือด/ปลูกถ่ายไขกระดูก</td></tr>
+</table>
+<div class="know-box know-box-red"><strong>⚠️ หมายเหตุสำคัญ:</strong> Hb typing บอกได้แค่ 'มีอะไร' และ 'กี่ %' เท่านั้น ต้องดู MCV MCH และ PCR ร่วมเสมอ HPLC ตรวจ α thal 1 (––) และ α thal 2 (–α) <strong>ไม่ได้</strong></div>
+<p class="know-p" style="text-align:center;color:#94a3b8;margin-top:16px">จัดทำเพื่อการศึกษา — อ้างอิง: เอกสารแปลผล Hb typing (Level 1–3)</p>
+</div>
+`;
+
+function openKnowledge() {
+  document.getElementById('knowledgeOverlay').classList.add('show');
+  const body = document.getElementById('knowBody');
+  if (!body.innerHTML) body.innerHTML = KNOW_HTML;
+}
+function closeKnowledge() {
+  document.getElementById('knowledgeOverlay').classList.remove('show');
+}
+function scrollToKnow(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function searchKnowledge(q) {
+  const body = document.getElementById('knowBody');
+  if (!body.innerHTML) body.innerHTML = KNOW_HTML;
+  // Remove old highlights
+  body.querySelectorAll('mark.know-highlight').forEach(el => {
+    el.replaceWith(document.createTextNode(el.textContent));
+  });
+  if (!q || q.length < 2) return;
+  function walkText(node) {
+    if (node.nodeType === 3) {
+      const idx = node.textContent.toLowerCase().indexOf(q.toLowerCase());
+      if (idx >= 0) {
+        const before = document.createTextNode(node.textContent.slice(0, idx));
+        const mark = document.createElement('mark');
+        mark.className = 'know-highlight';
+        mark.textContent = node.textContent.slice(idx, idx + q.length);
+        const after = document.createTextNode(node.textContent.slice(idx + q.length));
+        node.parentNode.replaceChild(after, node);
+        node.parentNode.insertBefore(mark, after);
+        node.parentNode.insertBefore(before, mark);
+      }
+    } else if (node.nodeType === 1 && !['SCRIPT','STYLE','INPUT'].includes(node.tagName)) {
+      Array.from(node.childNodes).forEach(walkText);
+    }
+  }
+  walkText(body);
+  const first = body.querySelector('.know-highlight');
+  if (first) first.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+
+// ══════════════════════════════════════════════
+// SCAN (CAMERA) — AI-powered form fill
+// ══════════════════════════════════════════════
+let scanTarget = 'm'; // 'm' or 'd'
+let scanExtracted = null;
+
+function openScanOverlay(person) {
+  scanTarget = person;
+  scanExtracted = null;
+  document.getElementById('scanStatus').classList.remove('show');
+  document.getElementById('scanResultBox').classList.remove('show');
+  document.getElementById('scanApplyBtn').style.display = 'none';
+  document.getElementById('scanFileInput').value = '';
+  const preview = document.getElementById('scanPreviewWrap');
+  preview.innerHTML = '<div style="font-size:36px">📄</div><div class="scan-upload-txt">แตะเพื่อเลือกรูปหรือถ่ายภาพ<small>รองรับ JPG, PNG, HEIC · ขนาดสูงสุด 10MB</small></div>';
+  document.getElementById('scanDropArea').classList.remove('has-img');
+  const sub = person === 'm' ? '📋 สแกนใบผลตรวจของ แม่ (มารดา)' : '📋 สแกนใบผลตรวจของ พ่อ (บิดา)';
+  document.getElementById('scanBoxSub').textContent = sub;
+  document.getElementById('scanNoteRow').style.display = 'none';
+  document.getElementById('scanOverlay').classList.add('show');
+}
+
+function closeScanOverlay() {
+  document.getElementById('scanOverlay').classList.remove('show');
+}
+
+function onScanFileChange(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    // Show preview
+    const preview = document.getElementById('scanPreviewWrap');
+    preview.innerHTML = '<img src="'+dataUrl+'" alt="ใบรายงาน">';
+    document.getElementById('scanDropArea').classList.add('has-img');
+    runScanAI(dataUrl);
+  };
+  reader.readAsDataURL(file);
+}
+
+async function runScanAI(dataUrl) {
+  document.getElementById('scanStatus').classList.add('show');
+  document.getElementById('scanResultBox').classList.remove('show');
+  document.getElementById('scanApplyBtn').style.display = 'none';
+  scanExtracted = null;
+
+  const base64 = dataUrl.split(',')[1];
+  const mimeMatch = dataUrl.match(/data:([^;]+);/);
+  const mediaType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+
+  const prompt = `คุณเป็นผู้เชี่ยวชาญด้านห้องปฏิบัติการโลหิตวิทยา
+กรุณาอ่านค่าจากใบรายงานผลการตรวจเลือด และแยกค่าต่อไปนี้:
+CBC: Hb (g/dL), MCV (fL), MCH (pg)
+Hb Typing/HPLC: HbA (%), HbA2 (%), HbF (%), HbE (%), HbH (%), Hb Bart's (%)
+
+ตอบเป็น JSON เท่านั้น ห้ามมีข้อความอื่น รูปแบบ:
+{"hb":null,"mcv":null,"mch":null,"hba":null,"hba2":null,"hbf":null,"hbe":null,"hbh":null,"barts":null,"note":""}
+
+- ถ้าไม่พบค่าใดให้ใส่ null
+- ใส่เฉพาะตัวเลข ไม่ใส่หน่วย
+- note: ใส่ข้อสังเกตสำคัญ (ถ้ามี) เช่น "ไม่พบ Hb Typing" หรือ ""`;
+
+  try {
+    const apiKey = localStorage.getItem('anthropic_api_key') || '';
+    if (!apiKey) {
+      document.getElementById('scanStatus').classList.remove('show');
+      document.getElementById('scanStatus').textContent = '';
+      showToast('⚙️ กรุณาใส่ API Key ในการตั้งค่าก่อน', 'err');
+      // Show helpful message in scan status
+      const st = document.getElementById('scanStatus');
+      st.textContent = '⚙️ ยังไม่มี API Key — กด ⚙️ ที่ topbar แล้วใส่ Anthropic API Key';
+      st.classList.add('show');
+      st.style.color = '#c0392b';
+      document.getElementById('scanApplyBtn').style.display = 'none';
+      return;
+    }
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+            { type: 'text', text: prompt }
+          ]
+        }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.find(b => b.type === 'text')?.text || '';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    scanExtracted = parsed;
+    showScanResult(parsed);
+  } catch(err) {
+    document.getElementById('scanStatus').textContent = '⚠️ อ่านไม่สำเร็จ กรุณาลองใหม่หรือกรอกเอง';
+  }
+}
+
+function showScanResult(d) {
+  document.getElementById('scanStatus').classList.remove('show');
+  const fmtVal = (v) => (v !== null && v !== undefined && v !== '') ? String(v) : null;
+  const fields = ['hb','mcv','mch','hba','hba2','hbf','hbe','hbh','barts'];
+  fields.forEach(f => {
+    const el = document.getElementById('sr_'+f);
+    const val = fmtVal(d[f]);
+    if (el) {
+      el.textContent = val !== null ? val : '—';
+      el.className = 'scan-field-val' + (val === null ? ' empty' : '');
+    }
+  });
+  const noteRow = document.getElementById('scanNoteRow');
+  if (d.note && d.note.trim()) {
+    noteRow.textContent = '💬 ' + d.note;
+    noteRow.style.display = 'block';
+  } else { noteRow.style.display = 'none'; }
+  document.getElementById('scanResultBox').classList.add('show');
+  document.getElementById('scanApplyBtn').style.display = 'block';
+}
+
+function applyScanResult() {
+  if (!scanExtracted) return;
+  const p = scanTarget;
+  const map = {hb:p+'_hb', mcv:p+'_mcv', mch:p+'_mch', hba:p+'_hba', hba2:p+'_hba2', hbf:p+'_hbf', hbe:p+'_hbe', hbh:p+'_hbh', barts:p+'_barts'};
+  Object.entries(map).forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const val = scanExtracted[key];
+    if (val !== null && val !== undefined && val !== '') {
+      el.value = val;
+      el.classList.add('ok');
+    }
+  });
+  // Switch to num mode
+  setMode(p, 'num');
+  closeScanOverlay();
+  // Trigger auto-interpret after a tick
+  setTimeout(() => {
+    const data = interpret(p);
+    if (data) renderResult(p, data);
+    showToast('✅ กรอกค่าจากรูปแล้ว', 'ok');
+  }, 100);
+}
+
+// ══════════════════════════════════════════════
+// PCR PER-PERSON SECTION
+// ══════════════════════════════════════════════
+const pcrState = { m: { type: null, result: null }, d: { type: null, result: null } };
+
+function showPcrDetailSection() {
+  const sec = document.getElementById('pcrDetailSec');
+  if (!sec) return;
+  if (!currentRiskData) return;
+  const needsPcr = currentRiskData.sc || (currentRiskData.acts && currentRiskData.acts.some(a => a.startsWith('pcr')));
+  if (needsPcr) {
+    sec.style.display = 'block';
+    // Auto-suggest PCR type based on genotype
+    const mg = mData ? mData.geno : '';
+    const dg = dData ? dData.geno : '';
+    const mNeedsAlpha = (mData && mData.needPcr && mData.needPcr.includes('α')) || mg.includes('−') || mg.includes('α−');
+    const dNeedsAlpha = (dData && dData.needPcr && dData.needPcr.includes('α')) || dg.includes('−') || dg.includes('α−');
+    const mNeedsBeta  = mg.includes('β') || mg.includes('βᴱ');
+    const dNeedsBeta  = dg.includes('β') || dg.includes('βᴱ');
+    if (!pcrState.m.type) {
+      if (mNeedsAlpha && mNeedsBeta) setPcrType('m','both');
+      else if (mNeedsAlpha) setPcrType('m','alpha');
+      else if (mNeedsBeta) setPcrType('m','beta');
+    }
+    if (!pcrState.d.type) {
+      if (dNeedsAlpha && dNeedsBeta) setPcrType('d','both');
+      else if (dNeedsAlpha) setPcrType('d','alpha');
+      else if (dNeedsBeta) setPcrType('d','beta');
+    }
+  } else {
+    sec.style.display = 'none';
+  }
+}
+
+function setPcrType(person, type) {
+  pcrState[person].type = type;
+  const types = ['Alpha','Beta','Both','None'];
+  types.forEach(t => {
+    const el = document.getElementById(person + 'PcrType' + t);
+    if (!el) return;
+    el.className = 'pcr-type-chip inactive';
+  });
+  const map = {alpha:'Alpha', beta:'Beta', both:'Both', none:'None'};
+  const active = document.getElementById(person + 'PcrType' + map[type]);
+  if (active) {
+    if (type === 'alpha') active.className = 'pcr-type-chip active-alpha';
+    else if (type === 'beta') active.className = 'pcr-type-chip active-beta';
+    else if (type === 'both') active.className = 'pcr-type-chip active-alpha';
+    else active.className = 'pcr-type-chip inactive';
+  }
+  const btns = document.getElementById(person + 'PcrResultBtns');
+  if (btns) btns.style.display = (type && type !== 'none') ? 'flex' : 'none';
+  if (type === 'none') { pcrState[person].result = 'na'; updatePcrCombined(); }
+}
+
+function setPcrResult(person, result) {
+  pcrState[person].result = result;
+  const ids = ['Pend','Pos','Neg'];
+  ids.forEach(id => {
+    const el = document.getElementById(person + 'Pcr' + id);
+    if (!el) return;
+    el.className = el.className.replace(' selected','').replace(' unselected','');
+  });
+  const mapId = {pend:'Pend', positive:'Pos', negative:'Neg'};
+  const selId = mapId[result];
+  if (selId) {
+    const btn = document.getElementById(person + 'Pcr' + selId);
+    if (btn) btn.className += ' selected';
+    ids.filter(i => i !== selId).forEach(i => {
+      const b = document.getElementById(person + 'Pcr' + i);
+      if (b) b.className += ' unselected';
+    });
+  }
+  updatePcrCombined();
+}
+
+function updatePcrCombined() {
+  const cr = document.getElementById('pcrCombinedResult');
+  if (!cr) return;
+  const mR = pcrState.m.result;
+  const dR = pcrState.d.result;
+  const mT = pcrState.m.type;
+  const dT = pcrState.d.type;
+  if (!mR && !dR) { cr.classList.remove('show'); return; }
+
+  let html = '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#784212;margin-bottom:10px">🔬 ผลรวม — การแปลผลคู่</div>';
+
+  const mLabel = mT ? (mT==='alpha'?'PCR α (แม่)':mT==='beta'?'PCR β (แม่)':mT==='both'?'PCR α+β (แม่)':'ไม่ส่ง (แม่)') : '?';
+  const dLabel = dT ? (dT==='alpha'?'PCR α (พ่อ)':dT==='beta'?'PCR β (พ่อ)':dT==='both'?'PCR α+β (พ่อ)':'ไม่ส่ง (พ่อ)') : '?';
+  const mResLabel = mR==='positive'?'🔴 Positive':mR==='negative'?'🟢 Negative':mR==='pend'?'⏳ รอผล':mR==='na'?'— ไม่ส่ง':'—';
+  const dResLabel = dR==='positive'?'🔴 Positive':dR==='negative'?'🟢 Negative':dR==='pend'?'⏳ รอผล':dR==='na'?'— ไม่ส่ง':'—';
+
+  html += `<div style="display:flex;gap:8px;margin-bottom:10px">
+    <div style="flex:1;background:var(--mom-l);border:1px solid var(--mom-b);border-radius:9px;padding:8px 10px">
+      <div style="font-size:10px;font-weight:700;color:var(--mom);margin-bottom:3px">แม่ · ${mLabel}</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text)">${mResLabel}</div>
+    </div>
+    <div style="flex:1;background:var(--dad-l);border:1px solid var(--dad-b);border-radius:9px;padding:8px 10px">
+      <div style="font-size:10px;font-weight:700;color:var(--dad);margin-bottom:3px">พ่อ · ${dLabel}</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text)">${dResLabel}</div>
+    </div>
+  </div>`;
+
+  // Combined interpretation
+  const bothPos = (mR==='positive'||mR==='na') && (dR==='positive'||dR==='na') && (mR==='positive'||dR==='positive');
+  const eitherPend = mR==='pend' || dR==='pend';
+  const bothNeg = (mR==='negative'||mR==='na') && (dR==='negative'||dR==='na');
+  const onePos = (mR==='positive'&&(dR==='negative'||dR==='na')) || ((mR==='negative'||mR==='na')&&dR==='positive');
+
+  if (bothPos || (mR==='positive'&&dR==='positive')) {
+    html += `<div style="background:#fdedec;border:1.5px solid #e74c3c;border-radius:10px;padding:11px 13px">
+      <div style="font-size:14px;font-weight:800;color:#c0392b;margin-bottom:5px">❗ ทั้งคู่ Positive — ความเสี่ยงสูงสุด</div>
+      <p style="font-size:13px;color:#5d1a14;line-height:1.6">ยืนยันว่าทั้งพ่อและแม่พบ mutation<br>→ <strong>ส่งพบแพทย์ผู้เชี่ยวชาญทันที</strong> เพื่อ prenatal diagnosis<br>→ แจ้งคู่สมรสและวางแผน genetic counseling</p>
+    </div>`;
+  } else if (onePos) {
+    html += `<div style="background:#fef9e7;border:1.5px solid #f0c040;border-radius:10px;padding:11px 13px">
+      <div style="font-size:14px;font-weight:800;color:#9a7d0a;margin-bottom:5px">⚠️ พบ Positive ฝ่ายเดียว</div>
+      <p style="font-size:13px;color:#5d4e00;line-height:1.6">พบ mutation เพียงฝ่ายเดียว ความเสี่ยงลูกลดลง แต่ยังควรปรึกษาแพทย์<br>→ แจ้งผลให้แพทย์ผู้ดูแลทราบ<br>→ ติดตาม ANC ตามนัดพร้อมแจ้งผล</p>
+    </div>`;
+  } else if (eitherPend) {
+    html += `<div style="background:#f0f3f7;border:1.5px solid #94a3b8;border-radius:10px;padding:11px 13px">
+      <div style="font-size:14px;font-weight:800;color:#4a5568;margin-bottom:5px">⏳ ยังรอผล PCR บางส่วน</div>
+      <p style="font-size:13px;color:#374151;line-height:1.6">รอผลที่ยังค้างอยู่ก่อน<br>→ ติดตาม specimen และเร่งผล PCR<br>→ เมื่อได้ผลครบแล้วอัปเดตในระบบ</p>
+    </div>`;
+  } else if (bothNeg) {
+    html += `<div style="background:#eafaf1;border:1.5px solid #2ecc71;border-radius:10px;padding:11px 13px">
+      <div style="font-size:14px;font-weight:800;color:#1e8449;margin-bottom:5px">✅ ทั้งคู่ Negative — ความเสี่ยงต่ำมาก</div>
+      <p style="font-size:13px;color:#145a32;line-height:1.6">ไม่พบ mutation ในทั้งพ่อและแม่<br>→ ติดตาม ANC ปกติตามนัด<br>→ แจ้งแพทย์ผู้ดูแลทราบผล PCR<br>→ ไม่จำเป็นต้องส่งต่อเพิ่มเติม</p>
+    </div>`;
+  }
+  cr.innerHTML = html;
+  cr.classList.add('show');
+}
+
+// Hook into existing renderCouple to also show PCR detail section
+const _origRenderCouple = renderCouple;
+renderCouple = function() {
+  _origRenderCouple.apply(this, arguments);
+  showPcrDetailSection();
+};
+
+
+// ── API KEY ──
+function saveApiKey(val) {
+  if (val && val.startsWith('sk-')) {
+    localStorage.setItem('anthropic_api_key', val);
+    document.getElementById('apiKeyStatus').textContent = '✓ บันทึกแล้ว';
+    document.getElementById('apiKeyStatus').style.color = 'var(--green)';
+  } else if (val) {
+    document.getElementById('apiKeyStatus').textContent = 'รูปแบบไม่ถูกต้อง (ต้องขึ้นต้นด้วย sk-)';
+    document.getElementById('apiKeyStatus').style.color = 'var(--red)';
+  } else {
+    localStorage.removeItem('anthropic_api_key');
+    document.getElementById('apiKeyStatus').textContent = '';
+  }
+}
+function toggleApiKeyVis() {
+  const inp = document.getElementById('apiKeyInput');
+  const eye = document.getElementById('apiKeyEye');
+  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '🙈'; }
+  else { inp.type = 'password'; eye.textContent = '👁'; }
+}
+// Load saved API key on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('anthropic_api_key');
+  if (saved) {
+    const inp = document.getElementById('apiKeyInput');
+    if (inp) inp.value = saved;
+    const st = document.getElementById('apiKeyStatus');
+    if (st) { st.textContent = '✓ มี API Key บันทึกอยู่แล้ว'; st.style.color = 'var(--green)'; }
+  }
+});
+
+// ── RESET ──
+function resetAll() {
+  mData=null; dData=null; currentRiskData=null; pcrButtonState=null;
+  document.querySelectorAll('.dd-sel').forEach(s=>s.value='');
+  document.querySelectorAll('.ares').forEach(e=>e.classList.remove('show'));
+  document.querySelectorAll('.why-detail').forEach(e=>e.classList.remove('open'));
+  document.querySelectorAll('.btn-why').forEach(e=>e.classList.remove('open'));
+  document.getElementById('coupleSection').classList.remove('show');
+  const pcrP = document.getElementById('c_pcrPrompt');
+  if (pcrP) { pcrP.style.display='none'; pcrP.innerHTML=''; }
+  const btn = document.getElementById('btnSaveCase');
+  btn.disabled = false;
+  btn.innerHTML = '💾 บันทึกเคสนี้';
+  btn.style.background = 'linear-gradient(135deg,#1e8449 0%,#27ae60 100%)';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+
+<!-- ══════════════════════════════════════════════
+     GOOGLE APPS SCRIPT — คัดลอกไปใส่ใน Google Sheets
+═════════════════════════════════════════════════
+วิธี deploy:
+1. เปิด Google Sheets ใหม่ → ตั้งชื่อ Sheet1 ว่า "Cases"
+2. ใส่ header row: A1=Timestamp, B1=PatternMom, C1=GenoMom,
+   D1=PatternDad, E1=GenoDad, F1=Result, G1=PCR_Needed
+3. Extensions → Apps Script → วางโค้ดด้านล่าง → บันทึก
+4. Deploy → New deployment → Web app
+   - Execute as: Me
+   - Who has access: Anyone
+5. คลิก Deploy → Copy Web App URL
+6. นำ URL ไปวางในหน้า Admin > Google Sheets URL
+
+=== Google Apps Script ===
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Cases');
+    sheet.appendRow([
+      data.timestamp || '',
+      data.mom_pattern || '',
+      data.mom_geno || '',
+      data.dad_pattern || '',
+      data.dad_geno || '',
+      data.result || '',
+      data.pcr_needed || ''
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'ok'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'error', msg: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService
+    .createTextOutput('NamYuen Thal Screen GAS endpoint OK')
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
+═══════════════════════════════════════════════ -->
+
+
+<!-- ══ SCAN OVERLAY ══ -->
+<div class="scan-overlay" id="scanOverlay">
+  <div class="scan-box">
+    <div class="scan-box-title">📷 สแกนใบรายงานผล</div>
+    <div class="scan-box-sub" id="scanBoxSub">ถ่ายหรืออัปโหลดใบผลตรวจ — AI จะอ่านค่าให้อัตโนมัติ</div>
+    <div class="scan-upload-area" id="scanDropArea" onclick="document.getElementById('scanFileInput').click()">
+      <div id="scanPreviewWrap">
+        <div style="font-size:36px">📄</div>
+        <div class="scan-upload-txt">แตะเพื่อเลือกรูปหรือถ่ายภาพ<small>รองรับ JPG, PNG, HEIC · ขนาดสูงสุด 10MB</small></div>
+      </div>
+    </div>
+    <input type="file" id="scanFileInput" accept="image/*" capture="environment" style="display:none" onchange="onScanFileChange(event)">
+    <div class="scan-status" id="scanStatus">🔍 กำลังอ่านผลด้วย AI...</div>
+    <div class="scan-result-box" id="scanResultBox">
+      <div class="scan-result-title">📋 ค่าที่อ่านได้</div>
+      <div style="margin-bottom:6px"><strong style="font-size:12px;color:#4a5568">CBC</strong></div>
+      <div class="scan-field-row">
+        <div class="scan-field"><div class="scan-field-lbl">Hb (g/dL)</div><div class="scan-field-val" id="sr_hb">—</div></div>
+        <div class="scan-field"><div class="scan-field-lbl">MCV (fL)</div><div class="scan-field-val" id="sr_mcv">—</div></div>
+        <div class="scan-field"><div class="scan-field-lbl">MCH (pg)</div><div class="scan-field-val" id="sr_mch">—</div></div>
+      </div>
+      <div style="margin-bottom:6px;margin-top:8px"><strong style="font-size:12px;color:#4a5568">Hb Typing</strong></div>
+      <div class="scan-field-row">
+        <div class="scan-field"><div class="scan-field-lbl">HbA (%)</div><div class="scan-field-val" id="sr_hba">—</div></div>
+        <div class="scan-field"><div class="scan-field-lbl">HbA₂ (%)</div><div class="scan-field-val" id="sr_hba2">—</div></div>
+        <div class="scan-field"><div class="scan-field-lbl">HbF (%)</div><div class="scan-field-val" id="sr_hbf">—</div></div>
+      </div>
+      <div class="scan-field-row" style="margin-top:6px">
+        <div class="scan-field"><div class="scan-field-lbl">HbE (%)</div><div class="scan-field-val" id="sr_hbe">—</div></div>
+        <div class="scan-field"><div class="scan-field-lbl">HbH (%)</div><div class="scan-field-val" id="sr_hbh">—</div></div>
+        <div class="scan-field"><div class="scan-field-lbl">Bart's (%)</div><div class="scan-field-val" id="sr_barts">—</div></div>
+      </div>
+      <div id="scanNoteRow" style="font-size:12px;color:#7d4e00;background:#fff8f0;border-radius:8px;padding:7px 10px;margin-top:8px;display:none"></div>
+    </div>
+    <div class="scan-btn-row" style="margin-top:4px">
+      <button class="scan-cancel-btn" onclick="closeScanOverlay()">ยกเลิก</button>
+      <button class="scan-apply-btn" id="scanApplyBtn" onclick="applyScanResult()" style="display:none">✅ กรอกค่าให้เลย</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
